@@ -7,7 +7,7 @@
 #+JEKYLL_PUBLISHED: true
 #+JEKYLL_COMMENTS: true
 
-日常生活中可以自动化的事情。随笔记录。
+日常生活中可以自动化的事情。随手写段小程序记录。
 
 {{{more}}}
 
