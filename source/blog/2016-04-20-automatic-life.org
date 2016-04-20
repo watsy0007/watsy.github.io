@@ -1,0 +1,33 @@
+#+TITLE: 自动化人生-闹钟
+#+DATE: 2016-04-20
+#+SETUPFILE: ~/Documents/octopress/setupfile.org
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES: life
+#+JEKYLL_TAGS: life
+#+JEKYLL_PUBLISHED: true
+#+JEKYLL_COMMENTS: true
+
+日常生活中可以自动化的事情。随笔记录。
+
+{{{more}}}
+
+今天中午有点犯困，碰巧没带apple watch，没办法用闹钟功能，又不想用手机闹钟打扰同事，决定用电脑上的闹钟。翻了下mac的application目录，发现并没有闹钟。想着要不要下个闹钟时候，突然想到我是程序员啊。
+简单点用shell写个用用就好了。代码如下
+
+sleep.sh
+#+BEGIN_SRC shell
+sleep $1
+while true
+do
+  sleep 1
+  say "wake up"
+done
+#+END_SRC
+实现到点人声提醒起床
+
+午睡10分钟
+#+BEGIN_SRC shell
+./sleep.sh 600
+#+END_SRC
+
+带上耳机调节椅背睡觉。

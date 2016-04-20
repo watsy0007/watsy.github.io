@@ -1,0 +1,53 @@
+---
+title: "自动化人生-闹钟"
+date: 2016-04-20
+layout: post
+categories: 
+- life
+tags: 
+- life
+published: true
+comments: true
+---
+<p>
+日常生活中可以自动化的事情。随笔记录。
+</p>
+
+<p>
+<!-- more -->
+</p>
+
+<p>
+今天中午有点犯困，碰巧没带apple watch，没办法用闹钟功能，又不想用手机闹钟打扰同事，决定用电脑上的闹钟。翻了下mac的application目录，发现并没有闹钟。想着要不要下个闹钟时候，突然想到我是程序员啊。
+简单点用shell写个用用就好了。代码如下
+</p>
+
+<p>
+sleep.sh
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell">sleep $<span style="color: #d75fd7;">1</span>
+<span style="color: #268bd2; font-weight: bold;">while </span><span style="color: #268bd2;">true</span>
+<span style="color: #268bd2; font-weight: bold;">do</span>
+  sleep <span style="color: #d75fd7;">1</span>
+  say <span style="color: #2aa198;">"wake up"</span>
+<span style="color: #268bd2; font-weight: bold;">done</span>
+</pre>
+</div>
+<p>
+实现到点人声提醒起床
+</p>
+
+<p>
+午睡10分钟
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell">./sleep.sh <span style="color: #d75fd7;">600</span>
+</pre>
+</div>
+
+<p>
+带上耳机调节椅背睡觉。
+</p>
