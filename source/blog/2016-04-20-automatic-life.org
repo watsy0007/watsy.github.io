@@ -14,7 +14,7 @@
 今天中午有点犯困，碰巧没带apple watch，没办法用闹钟功能，又不想用手机闹钟打扰同事，决定用电脑上的闹钟。翻了下mac的application目录，发现并没有闹钟。想着要不要下个闹钟时候，突然想到我是程序员啊。
 简单点用shell写个用用就好了。代码如下
 
-sleep.sh
+[[https://gist.github.com/3aa46607b144967d697a20f4bc2e0a38][sleep.sh]]
 #+BEGIN_SRC shell
 sleep $1
 while true
