@@ -1,0 +1,15 @@
+#+TITLE: 谈一谈笔记
+#+DATE: 2016-04-25
+#+SETUPFILE: ~/Documents/octopress/setupfile.org
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES: life
+#+JEKYLL_TAGS: life
+#+JEKYLL_PUBLISHED: false
+
+
+我不算1个爱总结，爱收藏的人，不过想想这么多年，用了很多笔记，曾经也疯狂的学习使用印象笔记。
+最近开始放弃印象笔记，采用最简单的苹果的notes和最复杂的emacs内的org-mode。有一些决策原因，这里想和大家分享下。
+
+
+{{{more}}}
+
