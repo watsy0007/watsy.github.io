@@ -1,0 +1,17 @@
+#+TITLE: shadowsocks ruby 笔记(2)
+#+DATE: 2016-05-03
+#+SETUPFILE: ~/Documents/octopress/setupfile.org
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES: ruby
+#+JEKYLL_TAGS: ruby
+#+JEKYLL_PUBLISHED: false
+#+JEKYLL_COMMENTS: true
+
+算法篇
+
+{{{more}}}
+
+刚开始看python版本算法，看不懂。
+开始看网上资料。
+
+[[https://shadowsocks.org/en/spec/protocol.html][shadowsocks协议资料]]

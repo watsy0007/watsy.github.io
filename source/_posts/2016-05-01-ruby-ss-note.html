@@ -1,0 +1,90 @@
+---
+title: "shadowsocks-ruby 笔记(1)"
+date: 2016-05-01
+layout: post
+categories: 
+- ruby
+tags: 
+- ruby 
+- actor
+published: true
+comments: 
+---
+<p>
+ruby开发ss 系列文章第一篇&#x2014; tcp 服务器
+</p>
+
+<p>
+<!-- more -->
+</p>
+
+<p>
+功能
+</p>
+
+<ol class="org-ol">
+<li>多端口绑定</li>
+<li>每个tcp 独立运行</li>
+<li>任一tcp server 异常自动重启</li>
+</ol>
+
+<div class="org-src-container">
+
+<pre class="src src-ruby"><span style="color: #008787; background-color: #262626;">#</span><span style="color: #008787; background-color: #262626;">!/usr/bin/env ruby</span>
+<span style="color: #008787; background-color: #262626;">#</span>
+<span style="color: #268bd2;">require</span> <span style="color: #2aa198;">"bundler/setup"</span>
+<span style="color: #268bd2;">require</span> <span style="color: #2aa198;">"celluloid/io"</span>
+<span style="color: #268bd2;">require</span> <span style="color: #2aa198;">'celluloid/current'</span>
+
+<span style="color: #268bd2; font-weight: bold;">class</span> <span style="color: #df005f; font-weight: bold;">EchoServer</span>
+  <span style="color: #268bd2;">include</span> <span style="color: #df005f; font-weight: bold;">Celluloid</span>::<span style="color: #df005f; font-weight: bold;">IO</span>
+  finalizer <span style="color: #d75fd7;">:finalize</span>
+
+  <span style="color: #268bd2; font-weight: bold;">def</span> <span style="color: #d75fd7; font-weight: bold;">initialize</span><span style="color: #268bd2;">(</span>host, port<span style="color: #268bd2;">)</span>
+    <span style="color: #268bd2;">puts</span> <span style="color: #2aa198;">"*** Starting echo server on </span><span style="color: #8787d7;">#{host}</span><span style="color: #2aa198;">:</span><span style="color: #8787d7;">#{port}</span><span style="color: #2aa198;">"</span>
+    <span style="color: #8787d7;">@server</span> = <span style="color: #df005f; font-weight: bold;">TCPServer</span>.new<span style="color: #268bd2;">(</span>host, port<span style="color: #268bd2;">)</span>
+    async.run
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+
+  <span style="color: #268bd2; font-weight: bold;">def</span> <span style="color: #d75fd7; font-weight: bold;">finalize</span>
+    <span style="color: #268bd2;">puts</span> <span style="color: #2aa198;">"finalize </span><span style="color: #8787d7;">#{@server}</span><span style="color: #2aa198;">"</span>
+    <span style="color: #8787d7;">@server</span>.close <span style="color: #268bd2; font-weight: bold;">if</span> <span style="color: #8787d7;">@server</span>
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+
+  <span style="color: #268bd2; font-weight: bold;">def</span> <span style="color: #d75fd7; font-weight: bold;">run</span>
+    <span style="color: #268bd2;">loop</span> <span style="color: #268bd2;">{</span> async.handle_connection <span style="color: #8787d7;">@server</span>.accept <span style="color: #268bd2;">}</span>
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+
+  <span style="color: #268bd2; font-weight: bold;">def</span> <span style="color: #d75fd7; font-weight: bold;">handle_connection</span><span style="color: #268bd2;">(</span>socket<span style="color: #268bd2;">)</span>
+    _, port, host = socket.peeraddr
+    <span style="color: #268bd2;">puts</span> <span style="color: #2aa198;">"*** Received connection from </span><span style="color: #8787d7;">#{host}</span><span style="color: #2aa198;">:</span><span style="color: #8787d7;">#{port}</span><span style="color: #2aa198;">"</span>
+    <span style="color: #268bd2;">loop</span> <span style="color: #268bd2; font-weight: bold;">do</span>
+      reads = socket.read
+      <span style="color: #268bd2;">raise</span> <span style="color: #df005f; font-weight: bold;">EOFError</span>, <span style="color: #2aa198;">'error'</span> <span style="color: #268bd2; font-weight: bold;">if</span> reads.empty? &amp;&amp; socket.eof?
+      socket.write reads
+    <span style="color: #268bd2; font-weight: bold;">end</span>
+  <span style="color: #268bd2; font-weight: bold;">rescue</span> <span style="color: #df005f; font-weight: bold;">EOFError</span>
+    <span style="color: #268bd2;">puts</span> <span style="color: #2aa198;">"*** </span><span style="color: #8787d7;">#{host}</span><span style="color: #2aa198;">:</span><span style="color: #8787d7;">#{port}</span><span style="color: #2aa198;"> disconnected"</span>
+    socket.close
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+
+supervisor = <span style="color: #df005f; font-weight: bold;">EchoServer</span>.supervise_as <span style="color: #d75fd7;">:_1234</span>, <span style="color: #2aa198;">'127.0.0.1'</span>, <span style="color: #d75fd7;">1234</span>
+<span style="color: #df005f; font-weight: bold;">EchoServer</span>.supervise_as <span style="color: #d75fd7;">:_1235</span>, <span style="color: #2aa198;">'127.0.0.1'</span>, <span style="color: #d75fd7;">1235</span>
+<span style="color: #268bd2;">trap</span><span style="color: #268bd2;">(</span><span style="color: #2aa198;">"INT"</span><span style="color: #268bd2;">)</span> <span style="color: #268bd2; font-weight: bold;">do</span>
+  supervisor.terminate
+  <span style="color: #268bd2;">exit</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+
+timers = <span style="color: #df005f; font-weight: bold;">Timers</span>::<span style="color: #df005f; font-weight: bold;">Group</span>.new
+timers.every<span style="color: #268bd2;">(</span><span style="color: #d75fd7;">5</span><span style="color: #268bd2;">)</span> <span style="color: #268bd2; font-weight: bold;">do</span>
+  actor = supervisor<span style="color: #268bd2;">[</span><span style="color: #d75fd7;">:_1234</span><span style="color: #268bd2;">]</span>
+  <span style="color: #268bd2; font-weight: bold;">if</span> actor
+    <span style="color: #268bd2;">puts</span> <span style="color: #2aa198;">'kill server 1'</span>
+    <span style="color: #268bd2; font-weight: bold;">next</span> supervisor.remove<span style="color: #268bd2;">(</span>actor<span style="color: #268bd2;">)</span>
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+  <span style="color: #df005f; font-weight: bold;">EchoServer</span>.supervise_as <span style="color: #d75fd7;">:_1234</span>, <span style="color: #2aa198;">'127.0.0.1'</span>, <span style="color: #d75fd7;">1234</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+<span style="color: #268bd2;">loop</span> <span style="color: #268bd2;">{</span> timers.wait <span style="color: #268bd2;">}</span>
+</pre>
+</div>
