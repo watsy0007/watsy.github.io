@@ -1,0 +1,122 @@
+#+TITLE: rails + elasticsearch 畅游数据
+#+DATE: 2016-09-22
+#+SETUPFILE: ~/Documents/octopress/setupfile.org
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES: ruby
+#+JEKYLL_TAGS: ruby elasticsearch
+#+JEKYLL_PUBLISHED: true
+#+JEKYLL_COMMENTS: true
+
+* 
+rails 使用 elasticsearch 小记
+
+{{{more}}}
+
+** 环境
+
+| 环境          |           版本 |
+|---------------+----------------|
+| 系统          | mac os x 10.12 |
+| ruby          |          2.3.1 |
+| rails         |        5.0.0.1 |
+| elasticsearch |            2.4 |
+| docker        |         1.12.1 |
+| mysql         |            5.7 |
+
+
+** 配置mysql
+#+BEGIN_SRC shell
+docker pull mysql
+doacker run --name els_db -p 3306:3306 -t mysql
+#+END_SRC 
+
+** 安装elasticsearch
+
+#+BEGIN_SRC shell
+docker pull elasticsearch
+docker run --name els -p 9200:9200 -t elasticsearch
+#+END_SRC
+
+** 新建rails项目
+
+#+BEGIN_SRC shell
+rails new els --database=mysql
+#+END_SRC
+
+** 导入数据
+配置config/database.yml
+
+新建article模型
+#+BEGIN_SRC shell
+rails g model Article title:string content:text
+#+END_SRC
+
+编辑db/seed.rb
+
+#+BEGIN_SRC ruby
+1.to(100) do |index|
+  Article.create!(title: "title-#{index}", content: "content #{index * index}")
+end
+#+END_SRC
+
+执行迁移
+#+BEGIN_SRC shell
+rails db:create && rails db:migrate && rails db:seed
+#+END_SRC
+
+** 配置elasticsearch
+
+引入gem
+#+BEGIN_SRC ruby
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
+gem 'elasticsearch-persistence'
+#+END_SRC
+
+执行
+#+BEGIN_SRC shell
+echo "require 'elasticsearch/rails/tasks/import'" > lib/tasks/elasticsearch.rake
+
+rails g migration AddIndexesToArticles
+#+END_SRC
+
+编辑迁移
+#+BEGIN_SRC ruby
+class AddIndexesToArticles < ActiveRecorad::Migration
+  def change
+    add_index :articles, :title
+    add_index :articles, :content
+  end
+end
+#+END_SRC
+
+编辑article.rb
+
+#+BEGIN_SRC ruby
+class Article < ApplicationRecord
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
+
+  mapping dynamic: false do
+    indexes :title
+    indexes :content
+  end
+end
+#+END_SRC
+
+执行
+#+BEGIN_SRC shell
+bundle update
+rake environment elasticsearch:import:all FORCE=y
+#+END_SRC
+
+** 测试
+
+rails console中执行
+
+#+BEGIN_SRC ruby
+response = Article.search('title-1')
+response.took
+response.results
+response.records.to_a
+#+END_SRC
