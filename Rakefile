@@ -228,11 +228,6 @@ end
 
 desc "copy dot files for deployment"
 task :copydot, :source, :dest do |t, args|
-  puts 'sss'
-  FileList["#{args.srouce}/**/.*"].exclude("**/.", "**/..", "**/._*").each do |file|
-    puts file
-  end
-  puts '123'
   FileList["#{args.source}/**/.*"].exclude("**/.", "**/..", "**/.DS_Store", "**/._*").each do |file|
     cp_r file, file.gsub(/#{args.source}/, "#{args.dest}") unless File.directory?(file)
   end
@@ -240,8 +235,8 @@ end
 
 desc "deploy public directory to github pages"
 multitask :push do
-  puts "## Deploying branch to Github Pages "
-  puts "## Pulling any updates from Github Pages "
+  # puts "## Deploying branch to Github Pages "
+  # puts "## Pulling any updates from Github Pages "
   cd "#{deploy_dir}" do 
     Bundler.with_clean_env { system "git pull" }
   end
