@@ -1,6 +1,6 @@
 #+TITLE: 泰国游记
 #+DATE: 2015-05-02
-#+SETUPFILE: ~/Documents/octopress/setupfile.org
+#+SETUPFILE: /Users/watsy/Documents/code/github/watsy0007.github.io/setupfile/setupfile-sample.org
 #+JEKYLL_LAYOUT: post
 #+JEKYLL_CATEGORIES: travel
 #+JEKYLL_TAGS: travel

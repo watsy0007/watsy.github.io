@@ -1,6 +1,6 @@
+#+SETUPFILE: ~/Documents/code/github/watsy0007.github.io/setupfile/setupfile-sample.org
 #+TITLE: 我的编程习惯-工具篇
 #+DATE: 2015-06-15
-#+SETUPFILE: ~/Documents/octopress/setupfile.org
 #+JEKYLL_LAYOUT: post
 #+JEKYLL_CATEGORIES: programming
 #+JEKYLL_TAGS: programming

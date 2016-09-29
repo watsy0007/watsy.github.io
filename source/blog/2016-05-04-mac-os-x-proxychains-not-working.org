@@ -1,6 +1,6 @@
 #+TITLE: mac os x proxychains 命令行下无法代理原因
 #+DATE: 2016-05-04
-#+SETUPFILE: ~/Documents/octopress/setupfile.org
+#+SETUPFILE: /Users/watsy/Documents/code/github/watsy0007.github.io/setupfile/setupfile-sample.org
 #+JEKYLL_LAYOUT: post
 #+JEKYLL_CATEGORIES: mac
 #+JEKYLL_TAGS: mac

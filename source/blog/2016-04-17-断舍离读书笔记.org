@@ -1,6 +1,6 @@
 #+TITLE: 《断舍离》读书笔记
 #+DATE: 2015-04-24
-#+SETUPFILE: ~/Documents/octopress/setupfile.org
+#+SETUPFILE: /Users/watsy/Documents/code/github/watsy0007.github.io/setupfile/setupfile-sample.org
 #+JEKYLL_LAYOUT: post
 #+JEKYLL_CATEGORIES: books
 #+JEKYLL_TAGS: books

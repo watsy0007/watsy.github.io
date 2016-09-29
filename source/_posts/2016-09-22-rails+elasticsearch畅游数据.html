@@ -1,0 +1,239 @@
+---
+title: "rails+elasticsearch畅游数据"
+date: 2016-09-22
+layout: post
+categories: 
+- ruby
+tags: 
+- ruby 
+- elasticsearch
+published: true
+comments: true
+---
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1"></h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+rails 使用 elasticsearch 小记
+</p>
+
+<p>
+<!-- more -->
+</p>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-3">
+<h3 id="orgheadline2">环境</h3>
+<div class="outline-text-3" id="text-orgheadline2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">环境</th>
+<th scope="col" class="org-right">版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">系统</td>
+<td class="org-right">mac os x 10.12</td>
+</tr>
+
+<tr>
+<td class="org-left">ruby</td>
+<td class="org-right">2.3.1</td>
+</tr>
+
+<tr>
+<td class="org-left">rails</td>
+<td class="org-right">5.0.0.1</td>
+</tr>
+
+<tr>
+<td class="org-left">elasticsearch</td>
+<td class="org-right">2.4</td>
+</tr>
+
+<tr>
+<td class="org-left">docker</td>
+<td class="org-right">1.12.1</td>
+</tr>
+
+<tr>
+<td class="org-left">mysql</td>
+<td class="org-right">5.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3">配置mysql</h3>
+<div class="outline-text-3" id="text-orgheadline3">
+<div class="org-src-container">
+
+<pre class="src src-shell">docker pull mysql
+doacker run --name els_db -p <span style="color: #d75fd7;">3306:3306</span> -t mysql
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-3">
+<h3 id="orgheadline4">安装elasticsearch</h3>
+<div class="outline-text-3" id="text-orgheadline4">
+<div class="org-src-container">
+
+<pre class="src src-shell">docker pull elasticsearch
+docker run --name els -p <span style="color: #d75fd7;">9200:9200</span> -t elasticsearch
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-3">
+<h3 id="orgheadline5">新建rails项目</h3>
+<div class="outline-text-3" id="text-orgheadline5">
+<div class="org-src-container">
+
+<pre class="src src-shell">rails new els --database=mysql
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-3">
+<h3 id="orgheadline6">导入数据</h3>
+<div class="outline-text-3" id="text-orgheadline6">
+<p>
+配置config/database.yml
+</p>
+
+<p>
+新建article模型
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell">rails g model Article title:string content:text
+</pre>
+</div>
+
+<p>
+编辑db/seed.rb
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ruby"><span style="color: #d75fd7;">1</span>.to<span style="color: #268bd2;">(</span><span style="color: #d75fd7;">100</span><span style="color: #268bd2;">)</span> <span style="color: #268bd2; font-weight: bold;">do</span> |index|
+  <span style="color: #df005f; font-weight: bold;">Article</span>.create!<span style="color: #268bd2;">(</span><span style="color: #d75fd7;">title:</span> <span style="color: #2aa198;">"title-</span><span style="color: #8787d7;">#{index}</span><span style="color: #2aa198;">"</span>, <span style="color: #d75fd7;">content:</span> <span style="color: #2aa198;">"content </span><span style="color: #8787d7;">#{index * index}</span><span style="color: #2aa198;">"</span><span style="color: #268bd2;">)</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+</pre>
+</div>
+
+<p>
+执行迁移
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell">rails db:create &amp;&amp; rails db:migrate &amp;&amp; rails db:seed
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline7" class="outline-3">
+<h3 id="orgheadline7">配置elasticsearch</h3>
+<div class="outline-text-3" id="text-orgheadline7">
+<p>
+引入gem
+</p>
+<div class="org-src-container">
+
+<pre class="src src-ruby">gem <span style="color: #2aa198;">'elasticsearch-model'</span>
+gem <span style="color: #2aa198;">'elasticsearch-rails'</span>
+gem <span style="color: #2aa198;">'elasticsearch-persistence'</span>
+</pre>
+</div>
+
+<p>
+执行
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell"><span style="color: #268bd2;">echo</span> <span style="color: #2aa198;">"require 'elasticsearch/rails/tasks/import'"</span> &gt; lib/tasks/elasticsearch.rake
+
+rails g migration AddIndexesToArticles
+</pre>
+</div>
+
+<p>
+编辑迁移
+</p>
+<div class="org-src-container">
+
+<pre class="src src-ruby"><span style="color: #268bd2; font-weight: bold;">class</span> <span style="color: #df005f; font-weight: bold;">AddIndexesToArticles</span> &lt; <span style="color: #df005f; font-weight: bold;">ActiveRecorad</span>::<span style="color: #df005f; font-weight: bold;">Migration</span>
+  <span style="color: #268bd2; font-weight: bold;">def</span> <span style="color: #d75fd7; font-weight: bold;">change</span>
+    add_index <span style="color: #d75fd7;">:articles</span>, <span style="color: #d75fd7;">:title</span>
+    add_index <span style="color: #d75fd7;">:articles</span>, <span style="color: #d75fd7;">:content</span>
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+</pre>
+</div>
+
+<p>
+编辑article.rb
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ruby"><span style="color: #268bd2; font-weight: bold;">class</span> <span style="color: #df005f; font-weight: bold;">Article</span> &lt; <span style="color: #df005f; font-weight: bold;">ApplicationRecord</span>
+  <span style="color: #268bd2;">include</span> <span style="color: #df005f; font-weight: bold;">Elasticsearch</span>::<span style="color: #df005f; font-weight: bold;">Model</span>
+  <span style="color: #268bd2;">include</span> <span style="color: #df005f; font-weight: bold;">Elasticsearch</span>::<span style="color: #df005f; font-weight: bold;">Model</span>::<span style="color: #df005f; font-weight: bold;">Callbacks</span>
+
+  mapping <span style="color: #d75fd7;">dynamic:</span> <span style="color: #d75fd7;">false</span> <span style="color: #268bd2; font-weight: bold;">do</span>
+    indexes <span style="color: #d75fd7;">:title</span>
+    indexes <span style="color: #d75fd7;">:content</span>
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+</pre>
+</div>
+
+<p>
+执行
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell">bundle update
+rake environment elasticsearch:import:all <span style="color: #8787d7;">FORCE</span>=y
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline8" class="outline-3">
+<h3 id="orgheadline8">测试</h3>
+<div class="outline-text-3" id="text-orgheadline8">
+<p>
+rails console中执行
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ruby">response = <span style="color: #df005f; font-weight: bold;">Article</span>.search<span style="color: #268bd2;">(</span><span style="color: #2aa198;">'title-1'</span><span style="color: #268bd2;">)</span>
+response.took
+response.results
+response.records.to_a
+</pre>
+</div>
+</div>
+</div>
+</div>
