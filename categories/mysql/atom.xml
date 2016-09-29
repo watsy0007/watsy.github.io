@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Mysql | watsy0007]]></title>
+  <link href="http://blog.watsy0007.com/categories/mysql/atom.xml" rel="self"/>
+  <link href="http://blog.watsy0007.com/"/>
+  <updated>2016-09-29T19:38:07+08:00</updated>
+  <id>http://blog.watsy0007.com/</id>
+  <author>
+    <name><![CDATA[watsy0007]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Mysqldump Error 2013 Lost Connection to Mysql Server解决方案]]></title>
+    <link href="http://blog.watsy0007.com/2016-09-29-mysqldump-error-2013-lost-connection-to-mysql-server%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html"/>
+    <updated>2016-09-29T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/mysqldump-error-2013-lost-connection-to-mysql-server解决方案</id>
+    <content type="html"><![CDATA[<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">写mysql定期备份脚本时候执行mysqldump出现如标题提示的错误，记录下解决过程</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+<!-- more -->
+</p>
+
+
+<p>
+参考<a href="https://blog.lmlphp.com/archives/72/mysqldump_backup_large_data_error">mysqldump备份大数据出错</a> 
+</p>
+
+<p>
+最终通过
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-shell">mysqldump --opt --max_allowed_packet=<span style="color: #d75fd7;">1024M</span> --single-transaction dbname &gt; db.sql
+</pre>
+</div>
+
+
+<p>
+参考
+</p>
+
+<ol class="org-ol">
+<li><a href="http://stackoverflow.com/questions/8251727/mysql-archive-data-what-to-do-when-its-too-big">MySQL archive data…what to do when it's too big</a></li>
+<li><a href="http://stackoverflow.com/questions/36834337/running-mysqldump-throws-error-2013">Running mysqldump throws error 2013</a></li>
+</ol>
+</div>
+</div>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,26 @@
+#+TITLE: mysqldump error 2013 lost connection to mysql server解决方案
+#+DATE: 2016-09-29
+#+SETUPFILE: /Users/watsy/Documents/code/github/watsy0007.github.io/setupfile/setupfile-sample.org
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES: mysql
+#+JEKYLL_TAGS: mysql
+#+JEKYLL_PUBLISHED: true
+
+*  写mysql定期备份脚本时候执行mysqldump出现如标题提示的错误，记录下解决过程
+
+{{{more}}}
+
+
+参考[[https://blog.lmlphp.com/archives/72/mysqldump_backup_large_data_error][mysqldump备份大数据出错]] 
+
+ 最终通过
+
+#+BEGIN_SRC shell
+mysqldump --opt --max_allowed_packet=1024M --single-transaction dbname > db.sql
+#+END_SRC
+
+
+参考
+
+1. [[http://stackoverflow.com/questions/8251727/mysql-archive-data-what-to-do-when-its-too-big][MySQL archive data…what to do when it's too big]]
+2. [[http://stackoverflow.com/questions/36834337/running-mysqldump-throws-error-2013][Running mysqldump throws error 2013]]

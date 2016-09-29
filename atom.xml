@@ -1,0 +1,1702 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[watsy0007]]></title>
+  <link href="http://blog.watsy0007.com/atom.xml" rel="self"/>
+  <link href="http://blog.watsy0007.com/"/>
+  <updated>2016-09-29T19:38:07+08:00</updated>
+  <id>http://blog.watsy0007.com/</id>
+  <author>
+    <name><![CDATA[watsy0007]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Mysqldump Error 2013 Lost Connection to Mysql Server解决方案]]></title>
+    <link href="http://blog.watsy0007.com/2016-09-29-mysqldump-error-2013-lost-connection-to-mysql-server%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html"/>
+    <updated>2016-09-29T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/mysqldump-error-2013-lost-connection-to-mysql-server解决方案</id>
+    <content type="html"><![CDATA[<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">写mysql定期备份脚本时候执行mysqldump出现如标题提示的错误，记录下解决过程</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+<!-- more -->
+</p>
+
+
+<p>
+参考<a href="https://blog.lmlphp.com/archives/72/mysqldump_backup_large_data_error">mysqldump备份大数据出错</a> 
+</p>
+
+<p>
+最终通过
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-shell">mysqldump --opt --max_allowed_packet=<span style="color: #d75fd7;">1024M</span> --single-transaction dbname &gt; db.sql
+</pre>
+</div>
+
+
+<p>
+参考
+</p>
+
+<ol class="org-ol">
+<li><a href="http://stackoverflow.com/questions/8251727/mysql-archive-data-what-to-do-when-its-too-big">MySQL archive data…what to do when it's too big</a></li>
+<li><a href="http://stackoverflow.com/questions/36834337/running-mysqldump-throws-error-2013">Running mysqldump throws error 2013</a></li>
+</ol>
+</div>
+</div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails+elasticsearch畅游数据]]></title>
+    <link href="http://blog.watsy0007.com/2016-09-22-rails+elasticsearch%E7%95%85%E6%B8%B8%E6%95%B0%E6%8D%AE.html"/>
+    <updated>2016-09-22T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/rails+elasticsearch畅游数据</id>
+    <content type="html"><![CDATA[<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1"></h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+rails 使用 elasticsearch 小记
+</p>
+
+<p>
+<!-- more -->
+</p>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-3">
+<h3 id="orgheadline2">环境</h3>
+<div class="outline-text-3" id="text-orgheadline2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">环境</th>
+<th scope="col" class="org-right">版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">系统</td>
+<td class="org-right">mac os x 10.12</td>
+</tr>
+
+<tr>
+<td class="org-left">ruby</td>
+<td class="org-right">2.3.1</td>
+</tr>
+
+<tr>
+<td class="org-left">rails</td>
+<td class="org-right">5.0.0.1</td>
+</tr>
+
+<tr>
+<td class="org-left">elasticsearch</td>
+<td class="org-right">2.4</td>
+</tr>
+
+<tr>
+<td class="org-left">docker</td>
+<td class="org-right">1.12.1</td>
+</tr>
+
+<tr>
+<td class="org-left">mysql</td>
+<td class="org-right">5.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3">配置mysql</h3>
+<div class="outline-text-3" id="text-orgheadline3">
+<div class="org-src-container">
+
+<pre class="src src-shell">docker pull mysql
+doacker run --name els_db -p <span style="color: #d75fd7;">3306:3306</span> -t mysql
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-3">
+<h3 id="orgheadline4">安装elasticsearch</h3>
+<div class="outline-text-3" id="text-orgheadline4">
+<div class="org-src-container">
+
+<pre class="src src-shell">docker pull elasticsearch
+docker run --name els -p <span style="color: #d75fd7;">9200:9200</span> -t elasticsearch
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-3">
+<h3 id="orgheadline5">新建rails项目</h3>
+<div class="outline-text-3" id="text-orgheadline5">
+<div class="org-src-container">
+
+<pre class="src src-shell">rails new els --database=mysql
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-3">
+<h3 id="orgheadline6">导入数据</h3>
+<div class="outline-text-3" id="text-orgheadline6">
+<p>
+配置config/database.yml
+</p>
+
+<p>
+新建article模型
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell">rails g model Article title:string content:text
+</pre>
+</div>
+
+<p>
+编辑db/seed.rb
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ruby"><span style="color: #d75fd7;">1</span>.to<span style="color: #268bd2;">(</span><span style="color: #d75fd7;">100</span><span style="color: #268bd2;">)</span> <span style="color: #268bd2; font-weight: bold;">do</span> |index|
+  <span style="color: #df005f; font-weight: bold;">Article</span>.create!<span style="color: #268bd2;">(</span><span style="color: #d75fd7;">title:</span> <span style="color: #2aa198;">"title-</span><span style="color: #8787d7;">#{index}</span><span style="color: #2aa198;">"</span>, <span style="color: #d75fd7;">content:</span> <span style="color: #2aa198;">"content </span><span style="color: #8787d7;">#{index * index}</span><span style="color: #2aa198;">"</span><span style="color: #268bd2;">)</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+</pre>
+</div>
+
+<p>
+执行迁移
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell">rails db:create &amp;&amp; rails db:migrate &amp;&amp; rails db:seed
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline7" class="outline-3">
+<h3 id="orgheadline7">配置elasticsearch</h3>
+<div class="outline-text-3" id="text-orgheadline7">
+<p>
+引入gem
+</p>
+<div class="org-src-container">
+
+<pre class="src src-ruby">gem <span style="color: #2aa198;">'elasticsearch-model'</span>
+gem <span style="color: #2aa198;">'elasticsearch-rails'</span>
+gem <span style="color: #2aa198;">'elasticsearch-persistence'</span>
+</pre>
+</div>
+
+<p>
+执行
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell"><span style="color: #268bd2;">echo</span> <span style="color: #2aa198;">"require 'elasticsearch/rails/tasks/import'"</span> &gt; lib/tasks/elasticsearch.rake
+
+rails g migration AddIndexesToArticles
+</pre>
+</div>
+
+<p>
+编辑迁移
+</p>
+<div class="org-src-container">
+
+<pre class="src src-ruby"><span style="color: #268bd2; font-weight: bold;">class</span> <span style="color: #df005f; font-weight: bold;">AddIndexesToArticles</span> &lt; <span style="color: #df005f; font-weight: bold;">ActiveRecorad</span>::<span style="color: #df005f; font-weight: bold;">Migration</span>
+  <span style="color: #268bd2; font-weight: bold;">def</span> <span style="color: #d75fd7; font-weight: bold;">change</span>
+    add_index <span style="color: #d75fd7;">:articles</span>, <span style="color: #d75fd7;">:title</span>
+    add_index <span style="color: #d75fd7;">:articles</span>, <span style="color: #d75fd7;">:content</span>
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+</pre>
+</div>
+
+<p>
+编辑article.rb
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ruby"><span style="color: #268bd2; font-weight: bold;">class</span> <span style="color: #df005f; font-weight: bold;">Article</span> &lt; <span style="color: #df005f; font-weight: bold;">ApplicationRecord</span>
+  <span style="color: #268bd2;">include</span> <span style="color: #df005f; font-weight: bold;">Elasticsearch</span>::<span style="color: #df005f; font-weight: bold;">Model</span>
+  <span style="color: #268bd2;">include</span> <span style="color: #df005f; font-weight: bold;">Elasticsearch</span>::<span style="color: #df005f; font-weight: bold;">Model</span>::<span style="color: #df005f; font-weight: bold;">Callbacks</span>
+
+  mapping <span style="color: #d75fd7;">dynamic:</span> <span style="color: #d75fd7;">false</span> <span style="color: #268bd2; font-weight: bold;">do</span>
+    indexes <span style="color: #d75fd7;">:title</span>
+    indexes <span style="color: #d75fd7;">:content</span>
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+</pre>
+</div>
+
+<p>
+执行
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell">bundle update
+rake environment elasticsearch:import:all <span style="color: #8787d7;">FORCE</span>=y
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline8" class="outline-3">
+<h3 id="orgheadline8">测试</h3>
+<div class="outline-text-3" id="text-orgheadline8">
+<p>
+rails console中执行
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ruby">response = <span style="color: #df005f; font-weight: bold;">Article</span>.search<span style="color: #268bd2;">(</span><span style="color: #2aa198;">'title-1'</span><span style="color: #268bd2;">)</span>
+response.took
+response.results
+response.records.to_a
+</pre>
+</div>
+</div>
+</div>
+</div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mac Os X Proxychains 命令行下无法代理原因]]></title>
+    <link href="http://blog.watsy0007.com/2016-05-04-mac-os-x-proxychains-not-working.html"/>
+    <updated>2016-05-04T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/mac-os-x-proxychains-not-working</id>
+    <content type="html"><![CDATA[<p>
+最近打算用docker搭1个反向代理google的服务。网上找了一些命令行下代理的方案。采用的proxychains-ng，使用中发现无法翻墙。
+</p>
+
+<p>
+<!-- more -->
+</p>
+
+<p>
+具体配置方案这里就不写了。
+</p>
+
+<p>
+google 关键字 <b>proxychains-ng not working</b> 找到有人提了issue
+</p>
+
+<p>
+<a href="https://github.com/rofl0r/proxychains-ng/issues/78">Not working on OS X 10.11. due to SIP</a>
+</p>
+
+<p>
+接着看下SIP资料 <a href="https://support.apple.com/en-us/HT204899">About System Integrity Protection on your Mac</a>
+</p>
+
+<p>
+继续翻翻有2种解决方案
+</p>
+
+<ol class="org-ol">
+<li>关闭SIP</li>
+</ol>
+<p>
+<a href="http://apple.stackexchange.com/questions/208478/how-do-i-disable-system-integrity-protection-sip-aka-rootless-on-os-x-10-11">how do i disable System Integrity Protection(SIP) AKA "rootless" on OS X 10.11, EI Capitan?</a>
+</p>
+
+<ol class="org-ol">
+<li>不用受保护目录下的命令</li>
+</ol>
+
+<div class="org-src-container">
+
+<pre class="src src-shell">proxychains4 /usr/local/Cellar/curl/7.48.0/bin/curl http://ifconfig.co
+</pre>
+</div>
+
+<p>
+解决
+</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Shadowsocks-ruby 笔记(1)]]></title>
+    <link href="http://blog.watsy0007.com/2016-05-01-ruby-ss-note.html"/>
+    <updated>2016-05-01T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/ruby-ss-note</id>
+    <content type="html"><![CDATA[<p>
+ruby开发ss 系列文章第一篇&#x2014; tcp 服务器
+</p>
+
+<p>
+<!-- more -->
+</p>
+
+<p>
+功能
+</p>
+
+<ol class="org-ol">
+<li>多端口绑定</li>
+<li>每个tcp 独立运行</li>
+<li>任一tcp server 异常自动重启</li>
+</ol>
+
+<div class="org-src-container">
+
+<pre class="src src-ruby"><span style="color: #008787; background-color: #262626;">#</span><span style="color: #008787; background-color: #262626;">!/usr/bin/env ruby</span>
+<span style="color: #008787; background-color: #262626;">#</span>
+<span style="color: #268bd2;">require</span> <span style="color: #2aa198;">"bundler/setup"</span>
+<span style="color: #268bd2;">require</span> <span style="color: #2aa198;">"celluloid/io"</span>
+<span style="color: #268bd2;">require</span> <span style="color: #2aa198;">'celluloid/current'</span>
+
+<span style="color: #268bd2; font-weight: bold;">class</span> <span style="color: #df005f; font-weight: bold;">EchoServer</span>
+  <span style="color: #268bd2;">include</span> <span style="color: #df005f; font-weight: bold;">Celluloid</span>::<span style="color: #df005f; font-weight: bold;">IO</span>
+  finalizer <span style="color: #d75fd7;">:finalize</span>
+
+  <span style="color: #268bd2; font-weight: bold;">def</span> <span style="color: #d75fd7; font-weight: bold;">initialize</span><span style="color: #268bd2;">(</span>host, port<span style="color: #268bd2;">)</span>
+    <span style="color: #268bd2;">puts</span> <span style="color: #2aa198;">"*** Starting echo server on </span><span style="color: #8787d7;">#{host}</span><span style="color: #2aa198;">:</span><span style="color: #8787d7;">#{port}</span><span style="color: #2aa198;">"</span>
+    <span style="color: #8787d7;">@server</span> = <span style="color: #df005f; font-weight: bold;">TCPServer</span>.new<span style="color: #268bd2;">(</span>host, port<span style="color: #268bd2;">)</span>
+    async.run
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+
+  <span style="color: #268bd2; font-weight: bold;">def</span> <span style="color: #d75fd7; font-weight: bold;">finalize</span>
+    <span style="color: #268bd2;">puts</span> <span style="color: #2aa198;">"finalize </span><span style="color: #8787d7;">#{@server}</span><span style="color: #2aa198;">"</span>
+    <span style="color: #8787d7;">@server</span>.close <span style="color: #268bd2; font-weight: bold;">if</span> <span style="color: #8787d7;">@server</span>
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+
+  <span style="color: #268bd2; font-weight: bold;">def</span> <span style="color: #d75fd7; font-weight: bold;">run</span>
+    <span style="color: #268bd2;">loop</span> <span style="color: #268bd2;">{</span> async.handle_connection <span style="color: #8787d7;">@server</span>.accept <span style="color: #268bd2;">}</span>
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+
+  <span style="color: #268bd2; font-weight: bold;">def</span> <span style="color: #d75fd7; font-weight: bold;">handle_connection</span><span style="color: #268bd2;">(</span>socket<span style="color: #268bd2;">)</span>
+    _, port, host = socket.peeraddr
+    <span style="color: #268bd2;">puts</span> <span style="color: #2aa198;">"*** Received connection from </span><span style="color: #8787d7;">#{host}</span><span style="color: #2aa198;">:</span><span style="color: #8787d7;">#{port}</span><span style="color: #2aa198;">"</span>
+    <span style="color: #268bd2;">loop</span> <span style="color: #268bd2; font-weight: bold;">do</span>
+      reads = socket.read
+      <span style="color: #268bd2;">raise</span> <span style="color: #df005f; font-weight: bold;">EOFError</span>, <span style="color: #2aa198;">'error'</span> <span style="color: #268bd2; font-weight: bold;">if</span> reads.empty? &amp;&amp; socket.eof?
+      socket.write reads
+    <span style="color: #268bd2; font-weight: bold;">end</span>
+  <span style="color: #268bd2; font-weight: bold;">rescue</span> <span style="color: #df005f; font-weight: bold;">EOFError</span>
+    <span style="color: #268bd2;">puts</span> <span style="color: #2aa198;">"*** </span><span style="color: #8787d7;">#{host}</span><span style="color: #2aa198;">:</span><span style="color: #8787d7;">#{port}</span><span style="color: #2aa198;"> disconnected"</span>
+    socket.close
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+
+supervisor = <span style="color: #df005f; font-weight: bold;">EchoServer</span>.supervise_as <span style="color: #d75fd7;">:_1234</span>, <span style="color: #2aa198;">'127.0.0.1'</span>, <span style="color: #d75fd7;">1234</span>
+<span style="color: #df005f; font-weight: bold;">EchoServer</span>.supervise_as <span style="color: #d75fd7;">:_1235</span>, <span style="color: #2aa198;">'127.0.0.1'</span>, <span style="color: #d75fd7;">1235</span>
+<span style="color: #268bd2;">trap</span><span style="color: #268bd2;">(</span><span style="color: #2aa198;">"INT"</span><span style="color: #268bd2;">)</span> <span style="color: #268bd2; font-weight: bold;">do</span>
+  supervisor.terminate
+  <span style="color: #268bd2;">exit</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+
+timers = <span style="color: #df005f; font-weight: bold;">Timers</span>::<span style="color: #df005f; font-weight: bold;">Group</span>.new
+timers.every<span style="color: #268bd2;">(</span><span style="color: #d75fd7;">5</span><span style="color: #268bd2;">)</span> <span style="color: #268bd2; font-weight: bold;">do</span>
+  actor = supervisor<span style="color: #268bd2;">[</span><span style="color: #d75fd7;">:_1234</span><span style="color: #268bd2;">]</span>
+  <span style="color: #268bd2; font-weight: bold;">if</span> actor
+    <span style="color: #268bd2;">puts</span> <span style="color: #2aa198;">'kill server 1'</span>
+    <span style="color: #268bd2; font-weight: bold;">next</span> supervisor.remove<span style="color: #268bd2;">(</span>actor<span style="color: #268bd2;">)</span>
+  <span style="color: #268bd2; font-weight: bold;">end</span>
+  <span style="color: #df005f; font-weight: bold;">EchoServer</span>.supervise_as <span style="color: #d75fd7;">:_1234</span>, <span style="color: #2aa198;">'127.0.0.1'</span>, <span style="color: #d75fd7;">1234</span>
+<span style="color: #268bd2; font-weight: bold;">end</span>
+<span style="color: #268bd2;">loop</span> <span style="color: #268bd2;">{</span> timers.wait <span style="color: #268bd2;">}</span>
+</pre>
+</div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails Engine 拆分业务方案]]></title>
+    <link href="http://blog.watsy0007.com/2016-04-29-rails-split-engine.html"/>
+    <updated>2016-04-29T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/rails-split-engine</id>
+    <content type="html"><![CDATA[<p>
+最近随着业务需要，需要对耦合在一起的任务进行拆分，正式发布之前这里记录一下拆分思路。
+有一些和业务相关的内容，已经采用正则替换。^-^
+</p>
+
+<p>
+<!-- more -->
+</p>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">项目发展背景</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+简单介绍下背景，在创业公司采用了ror 做最早的api。
+之后随着业务发展，逐步增加sso 模块；后台admin模块；聊天im模块；推荐recommend模块；dev 调试模块，最近又新增了1个微信分享的share模块。
+可预见的未来还会有其他业务模块继续增加。
+</p>
+
+<p>
+业务越来越复杂细化，代码越来越多，后端开发人数从原来2人增加到接近10人。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-2">
+<h2 id="orgheadline2">面临挑战</h2>
+<div class="outline-text-2" id="text-orgheadline2">
+<p>
+后台是用1个代码库的。
+虽然我们在业务设计时候是遵循正交设计。但是实际很多模块之间复用了一些公共代码.公共代码里面耦合了业务实现。
+早期用着很爽，随着时间慢慢暴露因为耦度高导致改动成本很大的现实！
+</p>
+
+<p>
+尽管我们有单元测试，但是改动起来各种单元测试报错，已经很难揣测最早的设计意图了。
+现实情况是经常遇到开发1个模块的功能，需要考虑其他几个模块实现。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-2">
+<h2 id="orgheadline3">升级方案</h2>
+<div class="outline-text-2" id="text-orgheadline3">
+<p>
+经过讨论得出我们现在到了业务发展，需要拆分子系统来满足这个阶段的业务和为下1个阶段进行铺垫。
+</p>
+
+<p>
+拆分子系统目前大家比较公认的是微服务方案。
+</p>
+
+<p>
+在权衡微服务方案过程中，考虑到实现微服务方案有很比较大的成本，服务发现和异常处理。这个是长期的事情。
+在这之前，业务是一定要拆分的。继续找方案，发现rails 提供了业务层的拆分方案。rails engine方案，
+rails engine方案可以对同1个项目内的代码进行组织成不同的模块实现业务上的拆分。
+</p>
+
+<p>
+具体拆分方案如下
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">模块</th>
+<th scope="col" class="org-left">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Core</td>
+<td class="org-left">核心模型</td>
+</tr>
+
+<tr>
+<td class="org-left">Api</td>
+<td class="org-left">api</td>
+</tr>
+
+<tr>
+<td class="org-left">Admin</td>
+<td class="org-left">后台管理</td>
+</tr>
+
+<tr>
+<td class="org-left">sso</td>
+<td class="org-left">单点登陆</td>
+</tr>
+
+<tr>
+<td class="org-left">recommand</td>
+<td class="org-left">推荐模块</td>
+</tr>
+
+<tr>
+<td class="org-left">dev</td>
+<td class="org-left">工程师调试模块</td>
+</tr>
+
+<tr>
+<td class="org-left">share</td>
+<td class="org-left">分享活动模块</td>
+</tr>
+</tbody>
+</table>
+
+
+<br>
+<p>
+发布上线系统
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">系统</th>
+<th scope="col" class="org-left">模块</th>
+<th scope="col" class="org-left">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Api</td>
+<td class="org-left">Api + Core</td>
+<td class="org-left">客户端请求api</td>
+</tr>
+
+<tr>
+<td class="org-left">Admin</td>
+<td class="org-left">Admin + Core</td>
+<td class="org-left">运维人员</td>
+</tr>
+
+<tr>
+<td class="org-left">sso</td>
+<td class="org-left">sso + Core</td>
+<td class="org-left">单点验证登陆</td>
+</tr>
+
+<tr>
+<td class="org-left">recommand</td>
+<td class="org-left">Recommand</td>
+<td class="org-left">推荐算法</td>
+</tr>
+
+<tr>
+<td class="org-left">share</td>
+<td class="org-left">share + Core</td>
+<td class="org-left">分享活动页面</td>
+</tr>
+</tbody>
+</table>
+
+<br>
+<p>
+拆分方案以后，每个系统可以独立发布，快速迭代上线。毕竟我们是用ror 开发，是创业型公司，这很重要。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4">方案明细</h2>
+<div class="outline-text-2" id="text-orgheadline4">
+<p>
+方案明确以后需要具体落实。
+</p>
+
+<p>
+拆分Rails Engine并不复杂。详情可以<a href="http://api.rubyonrails.org">点我</a>。
+</p>
+
+<p>
+在具体操作过程中，需要注意如下几点
+</p>
+
+<ol class="org-ol">
+<li>功能究竟放在哪个模块比较合适</li>
+<li>代码究竟放在哪个结构下更合适</li>
+<li>不兼容部分如何处理。</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-2">
+<h2 id="orgheadline5">最大问题</h2>
+<div class="outline-text-2" id="text-orgheadline5">
+<p>
+在明确了拆分细节以后，通过调研demo 很快演示了拆分的可行性。
+下面要考虑的问题来了。
+简单描述下问题是
+</p>
+
+<p>
+<b>如何在高速行驶的告诉公路上不停车进行换轮胎？</b>
+</p>
+
+<p>
+问题具体描述是
+</p>
+
+<ol class="org-ol">
+<li>功能在继续开发</li>
+<li>测试童鞋在测试上1个迭代的测试</li>
+<li>正式环境切换</li>
+<li>对用户和其他开发者无感知,无缝更新</li>
+</ol>
+
+<p>
+权衡最后采用如下步骤
+</p>
+
+<ol class="org-ol">
+<li>对demo 环境进行全面测试，处理方案明细中的注意事项，列出明细</li>
+<li>对development 环境进行短暂冻结，快速拆分</li>
+<li>对release后续的所有更新，采用人工方式，合并到development分支中</li>
+<li>下一迭代合并到release 分支进入测试</li>
+<li>下下迭代进入master 分支，真正拆分多个服务</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-2">
+<h2 id="orgheadline6">总结</h2>
+<div class="outline-text-2" id="text-orgheadline6">
+<p>
+本篇文章属于强行写下来公开的1个技术决策过程。后续考虑写1个系列。
+</p>
+</div>
+</div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[自动化人生-闹钟]]></title>
+    <link href="http://blog.watsy0007.com/2016-04-20-automatic-life.html"/>
+    <updated>2016-04-20T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/automatic-life</id>
+    <content type="html"><![CDATA[<p>
+日常生活中可以自动化的事情。随手写段小程序记录。
+</p>
+
+<p>
+<!-- more -->
+</p>
+
+<p>
+今天中午有点犯困，碰巧没带apple watch，没办法用闹钟功能，又不想用手机闹钟打扰同事，决定用电脑上的闹钟。翻了下mac的application目录，发现并没有闹钟。想着要不要下个闹钟时候，突然想到我是程序员啊。
+简单点用shell写个用用就好了。代码如下
+</p>
+
+<p>
+<a href="https://gist.github.com/3aa46607b144967d697a20f4bc2e0a38">sleep.sh</a>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell">sleep $<span style="color: #d75fd7;">1</span>
+<span style="color: #268bd2; font-weight: bold;">while </span><span style="color: #268bd2;">true</span>
+<span style="color: #268bd2; font-weight: bold;">do</span>
+  sleep <span style="color: #d75fd7;">1</span>
+  say <span style="color: #2aa198;">"wake up"</span>
+<span style="color: #268bd2; font-weight: bold;">done</span>
+</pre>
+</div>
+<p>
+实现到点人声提醒起床
+</p>
+
+<p>
+午睡10分钟
+</p>
+<div class="org-src-container">
+
+<pre class="src src-shell">./sleep.sh <span style="color: #d75fd7;">600</span>
+</pre>
+</div>
+
+<p>
+带上耳机调节椅背睡觉。
+</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[买衣服随笔]]></title>
+    <link href="http://blog.watsy0007.com/2016-01-25-buy-suit.html"/>
+    <updated>2016-01-25T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/buy-suit</id>
+    <content type="html"><![CDATA[<p>
+最近公司要拍职业照片。要拍1张正装照，1张休闲，还有团体的。
+工作这么多年了还没有正装呢。正好周末找个时间去买了1套。
+</p>
+
+<p>
+原本是不会有此文的，周日晚上在回顾2016年计划时候，*每周最少1篇博客* 的计划让我考虑还是写点什么。想来想去也就买衣服这件事情好写了。
+</p>
+
+<p>
+真正写时候发现，没什么好写的。写什么呢？流水账没必要记，又不是什么大事。把买衣服的过程好好回顾了一下。还真有几点值得写的。
+</p>
+
+<p>
+<!-- more -->
+</p>
+
+<p>
+首先发现1点很现实的事情
+</p>
+
+<div id="outline-container-orgheadline1" class="outline-3">
+<h3 id="orgheadline1">1. 人靠衣装马靠鞍</h3>
+<div class="outline-text-3" id="text-orgheadline1">
+<p>
+试衣服时候，脱下休闲装，换上正装的那个瞬间，想到这句话。穿上正装，不自然的人也觉得精神多了，自信多了。虽然知道这是我心里作祟。但是确实是有效果。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-3">
+<h3 id="orgheadline2">2. 西装的历史</h3>
+<div class="outline-text-3" id="text-orgheadline2">
+<p>
+既然穿着这么有效果，不自然的就想知道。西装的历史，顺手google一下<a href="https://zh.wikipedia.org/wiki/%E8%A5%BF%E8%A3%9D">西装</a>
+</p>
+
+<p>
+好玩的是这一段
+</p>
+
+<p>
+中国第一套西装诞生于1903年，知名民主革命家徐锡麟制作的，徐锡麟于1903年在大阪与同在日本学习西装工艺的宁波裁缝王睿谟相识，
+次年，徐锡麟回国，在上海王睿谟开设的王荣泰西服店定制西服，王睿谟花了三天三夜时间，全部用手工一针一线缝制出中国第一套国产西装。
+[來源請求]不過一直到20世紀後期西裝在中國才趨於普遍。西裝的傳入，初時多由出國商人或出國留學生穿着。
+上海的中式裁縫也開始學習製作西裝。1920年代的新文化運動中，西裝衝擊了傳統的長袍馬褂，此後西裝廣泛流傳，中國的西裝業也蓬勃發展。
+民國時代，國民政府曾明定長袍馬褂為國民禮服，當時的政治人物包括蔣介石、林森等人，也多穿著長袍馬褂、中山裝或者軍裝，而中華人民共和國成立後，毛澤東與鄧小平等重要領導人均穿著中山裝，直到改革開放之後，中國政治界人物，才普遍穿著西裝。
+</p>
+
+<p>
+这样看来，西装被我们接受的历史其实也就30多年，但是已经相当普遍了。可见文化的影响力。
+</p>
+
+<p>
+不过感觉wiki的这段历史演变线路并不清晰，于是从新找。找到百度百科的<a href="http://baike.baidu.com/subview/3265/5065000.htm?fromtitle=%E8%A5%BF%E6%9C%8D&amp;fromid=777321&amp;type=syn">西服的历史</a>
+大家可以看下，包括如何挑选也有了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3">3. 如何买到性价比合适东西</h3>
+<div class="outline-text-3" id="text-orgheadline3">
+<p>
+我的这套西装买的比较随意。在selected买的。衣服+裤子算下来2000出点头。不过买回来总觉得有点不对劲。
+因为西装有这么悠久的历史，这么广泛穿着场合。市场很大，也就表示属于买家市场，可以寻找最优性价比的西装。
+买之前怎么没有好好研究研究呢？太过随性了。
+想到这里，又想到，其实买方市场追求性价比是有一套通用的实践规则的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4">总结一下</h2>
+<div class="outline-text-2" id="text-orgheadline4">
+<ol class="org-ol">
+<li><b>了解产品的历史，材料，功能和市场等资料</b></li>
+<li><b>了解产品的相关品牌，以及品牌定位</b></li>
+<li><b>了解产品的价格，以及价格相关的品牌</b></li>
+<li><b>利用互联网攻略最高快购买高性价比的方案</b></li>
+<li><b>实践中调整</b></li>
+</ol>
+</div>
+</div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[我的编程习惯-工具篇]]></title>
+    <link href="http://blog.watsy0007.com/2015-06-15-my-programming-habit-tools.html"/>
+    <updated>2015-06-15T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/my-programming-habit-tools</id>
+    <content type="html"><![CDATA[<p>
+继上1篇以后。不知道大家有没有什么疑问？
+</p>
+
+<p>
+上1篇说的是习惯部分，如果大家细心点会发现。实际操作的时候，似乎不是这么回事，代码还是越写越乱，脏乱差的代码过不了多久照样会满天飞。
+</p>
+
+<p>
+更重要问题一段时间回头看，忘记自己当初写的是啥了。。  
+</p>
+
+
+<p>
+本篇和大家探讨一下在实践过程中，我们经常会忽略其重要性的 *工具*。  
+</p>
+
+<p>
+<!-- more -->
+</p>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1"><b>工具</b></h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+俗话说的好：工欲善其事，必先利其器。磨刀不误砍材功。  
+</p>
+
+<p>
+要想代码写的好，就得工具玩的好。关二老爷功夫在高，没有青龙偃月刀+赤兔马之前也很苦哈哈的。上了赤兔马以后，直接升级战神了。更有甚者有人说关二爷后期不行就是赤兔马老了。。。恩，说远了。  
+</p>
+
+<p>
+回到主题，对开发人员来说，工具的重要性不言而喻。  
+</p>
+
+<p>
+对开发而言衡量1个工具好不好的标准在我看来有2条评判标准：  
+</p>
+
+<ol class="org-ol">
+<li>自动化程度的高低</li>
+<li>操作的便捷性</li>
+</ol>
+
+<p>
+从我个人观点来看自动化相比便捷性的重要性更高1点。  
+</p>
+
+<p>
+基于以上2点，审视日常使用工具。可以拆分为以下3块来讨论。
+</p>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-3">
+<h3 id="orgheadline2">1. <b>协同办公</b></h3>
+<div class="outline-text-3" id="text-orgheadline2">
+<p>
+现代化的办公，本质上来说是众人对同一信息交流的过程。如果启动，监督，记录信息的过程是相当重要的。
+根据每个公司的性质不同，团队人员情况，采用的方式也不一样。这块的工具和本篇主题关系不大，先略过。以后有机会在讲。  
+本篇主要说说开发相关的。针对开发的协同。有2个点。  
+</p>
+
+<ol class="org-ol">
+<li>任务管理</li>
+<li>代码管理</li>
+</ol>
+
+<p>
+任务管理，唔，跳过好了。  
+剩下的只有代码的管理。  
+代码的管理呢，其实没什么好选的，目前常见的就是 <b>git</b> 和 <b>svn</b> 2个选择。
+然后选择工具呢？大家都有自己的使用习惯。
+在这里我只推荐我用的工具。 <b>jetbrains系列工具下的CSV功能</b>
+为啥这么推荐它呢？ 参考 工具评判标准的2点。自动化程度足够高，操作足够便捷。对SVN和git处理是一致的。  
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3">2. <b>代码编辑</b></h3>
+<div class="outline-text-3" id="text-orgheadline3">
+<p>
+代码编辑这块不能多说，说不好就引发编辑器圣战^0^。通常大家的选择在
+</p>
+<ol class="org-ol">
+<li>sublime text</li>
+<li>jetbrains</li>
+<li>vim</li>
+<li>emacs</li>
+<li>其他</li>
+</ol>
+
+<p>
+根据每个人情况不一样。选择自己喜欢的就好。不过如果参考我上面的2条评判标准来看。针对代码的编辑。
+结果不言而喻的是 <b>jerbrains</b> 系列工具更好。不要问我为什么。
+用习惯了就知道。你真的想知道吗？既然这么想，我就勉强说几点吧。  
+</p>
+
+<ol class="org-ol">
+<li>代码自动补全</li>
+<li>整合代码协同</li>
+<li>整合任务管理平台</li>
+<li>整合debug</li>
+<li>默认+自定义大量功能快捷键</li>
+<li>代码格式化</li>
+<li>大量插件</li>
+</ol>
+
+<p>
+什么？这几点大家都有？这个我承认，但是从操作的便捷性上来说，jetbrains完胜。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-3">
+<h3 id="orgheadline4">3. <b>效率类</b></h3>
+<div class="outline-text-3" id="text-orgheadline4">
+<p>
+开发人员每天大量的时间都在和电脑打交道。细心点整理下日常工作有以下几个操作：
+</p>
+
+<ol class="org-ol">
+<li>查找文件</li>
+<li>编辑文件</li>
+<li>搜索资料</li>
+</ol>
+
+<p>
+查找文件对很多人来说是在windows磁盘建大量的目录，分门别类的保存文件。需要的时候1级1级的去展开目录，找到想要的文件。。
+日积月累，有些资料完全忘记在哪了。。。想当初我用windows时候，没事无聊就把磁盘打开，从新建立更适合的分类，整理文件。
+为此我还特地学习了<a href="http://www.baike.com/wiki/%E6%9D%9C%E5%A8%81%E5%8D%81%E8%BF%9B%E5%88%B6%E5%9B%BE%E4%B9%A6%E5%88%86%E7%B1%BB%E6%B3%95">杜威十进制图书分类法</a>。   
+在换了mac以后，逐渐适应了系统自带的的<a href="http://zh.wikipedia.org/zh/Spotlight">spolight </a>。直到有1天，我看到了<a href="http://www.alfredapp.com">alfred 2</a>，果断的买了正版。
+理由可以参看<a href="http://www.zhihu.com/question/20656680">借助Alfred 2的Workflows功能可以做哪些好玩的事情？</a>用了它以后，基本上就没怎么费心在文件夹目录和查找文件上了。  
+当然对于linux用户来说。要啥手表。咱只要
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-shell">updatedb &amp;&amp; locate myfile
+grep <span style="color: #2aa198;">"content"</span>
+</pre>
+</div>
+
+<p>
+快速定位到文件以后，咱们开始编辑文件了。对文件的编辑有很多种，音视频啊，ppt啊，excel啊。代码啊。
+在这里咱们只讨论代码和普通文本文件。
+编辑的工具在上面已经讨论过，默认推荐jetbrains和sublime text
+这里要多说1个工具是辅助工具。
+细心1点留意日常编辑文件的状态，我发现会有很多文本是重复性的。  比如每天发固定内容的邮件，很多重复的代码片段。每次都要重复输入。
+而这种行为对程序员来说是可以自动化的。如何自动化呢？当当当当。<a href="http://smilesoftware.com/TextExpander/index.html">
+textexpander</a> ，介绍部分可以参看<a href="http://www.yangzhiping.com/tech/mac4.html">Mac 入门笔记（4）：文本输入</a>。补充1点，新版本出来以后会自动判断输入重复文本。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-2">
+<h2 id="orgheadline5">结尾</h2>
+<div class="outline-text-2" id="text-orgheadline5">
+<p>
+本篇原本是打算包含在习惯2里面的，考虑到内容的相关性，还是拿出来单独写一篇，不过质量并不高。
+先挖坑，如果大家对内容有兴趣，我会把针对工具开专题。
+</p>
+</div>
+</div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[我的编程习惯]]></title>
+    <link href="http://blog.watsy0007.com/2015-05-24-my-programming-habit.html"/>
+    <updated>2015-05-24T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/my-programming-habit</id>
+    <content type="html"><![CDATA[<p>
+写这篇文章是总结自己入行这么久的感悟。    
+不知道其他程序员怎么思考的，一直以来我都觉得自己不知道如何写程序！虽然也写了一些作品。但是从项目开发到结束的整个周期，我始终觉得自己完全是在摸着石头过河，碰运气刚好写了可以运行的代码。    
+</p>
+
+<p>
+仔细想想，可以把自己以往的编码阶段分为4段。  
+</p>
+
+<p>
+<!-- more -->
+</p>
+
+<ol class="org-ol">
+<li>先动手后思考</li>
+<li>边动手边思考</li>
+<li>边思考边动手</li>
+<li>先思考后动手</li>
+</ol>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">1. 先动手后思考</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+刚开始入门时候没人带领，很多功能需要摸索着实现，断断续续经历了疯狂的找源码，复制粘贴别人代码的阶段以后，开始自己考虑如何写功能。这个时候最痛苦事情是发现自己无从下手。只能从模仿别人代码开始练起。我想要实现的功能，找到相似的实现以后，自己对照着写下来在思考一遍。  
+这个阶段的代码看上去是千奇百怪。只能运行，没有风格。        
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-2">
+<h2 id="orgheadline2">2. 边动手边思考</h2>
+<div class="outline-text-2" id="text-orgheadline2">
+<p>
+熬过一段痛苦期开始尝试独立开发功能。进入1个新痛苦期，不知道程序如何设计。从以往的学习模仿经验中，反复的思考，功能怎么写，代码怎么写，复制粘贴自己的代码。运行起来。得不到自己想要的效果，究竟哪里出问题呢？还好当初有大神的指点，学会了**&lt;font color=red&gt;Debug&lt;/font&gt;**。利用语言自带的debug功能，一遍又一遍的跟踪查看自己的代码。写到哪里？出了什么问题？然后进行打补丁。针对各种逻辑分支进行单独处理。  
+这个阶段的代码看上去和第一阶段类似，一般都是1个万能方法处理一切。不过开始有章法，有自己的代码风格。  
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-2">
+<h2 id="orgheadline3">3. 边思考边动手</h2>
+<div class="outline-text-2" id="text-orgheadline3">
+<p>
+随着调试功能用的越来越熟练，个人在写程序过程中慢慢对调试产生了依赖。感觉写程序的效率越来越高，刷刷刷写完，开启**Debug**模式，跟踪查看是否每步都是我想要的结果，如果不是，关闭调试器，修改与预期不符合的代码段逻辑。    
+不过时间长了，心里甚是恐慌，没了调试器，我基本上就写不了程序。慢慢的在写程序的时候去思考程序的内在逻辑，代码应该怎么写，在开启调试器之前，先在内心对代码逻辑运行一次，然后再启动调试器大段大段的在我不确定的地方进行调试。    
+这个阶段的代码开始优美起来，会有注释，对具体的运算进行封装。根据需要拆分方法和对象，不过依然不干净。  
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4">4. 先思考后动手</h2>
+<div class="outline-text-2" id="text-orgheadline4">
+<p>
+这个阶段是现在正在刻意训练的阶段。经过对过往习惯总结和对程序设计的进一步学习。开始明白设计应该先于代码。很多不好的代码是在开始设计时候思考的时间太少。在逻辑不严谨的情况下匆匆完成，看似很快完成，但是牺牲了后续的可维护性。只能对各种漏洞进行打补丁，下一轮在补丁上进行补丁，直到代码变得很难维护。    
+那么先思考后动手究竟应该怎么做呢？我想很多人都知道这个概念，但是确不知道如何落地这个过程。在这我先抛砖引玉说下我的看法。  
+</p>
+
+<p>
+首先要把思考这个过程拆分为2个过程。
+</p>
+
+<ol class="org-ol">
+<li>思考业务</li>
+<li>思考代码逻辑</li>
+</ol>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-3">
+<h3 id="orgheadline5">4.1 思考业务</h3>
+<div class="outline-text-3" id="text-orgheadline5">
+<p>
+不能解决实际问题的代码，是没有价值的代码，不值得考虑的。在编写代码之前，我们首先要确认明白业务的内在逻辑。  
+明白业务的内在逻辑说的更简单1点。  
+就是要沟通思考，业务的执行顺序和执行过程中的输入变量和输出产物。然后还有极限边界处理和相关的隐变量（沟通过程中没有明确，但是业务要执行必须要考虑的，类是几何图形辅助线）。    
+</p>
+
+<p>
+在确认业务逻辑从开始获取输入输出，到产出指定产物这个流程明白以后，业务上的思考算结算。    
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-3">
+<h3 id="orgheadline6">4.2 思考代码逻辑</h3>
+<div class="outline-text-3" id="text-orgheadline6">
+<p>
+代码写了多了以后我们会发现，1个万能的方法就足够满足业务的需要，只要按照业务的逻辑写完肯定是没问题的。这也是前面几个阶段在做的事情。  
+但是实际情况确实，通常情况下，这个万能方法会因为权限太大，1个人干了所有的事情，导致这个方法发点小脾气，我们也无可奈何，任何和它的沟通都需要极大的成本才能妥协得到想要的结果。    
+结果就是，它会变成巨无霸。当然它不是麦当那个巨无霸，它是在代码中巨无霸，和其他代码相比，它太大了。大到任何人看到它都会恐惧。    
+另外1个情况就是我们会发现整个项目中，到处都是类似的代码存在。对业务的微小改动，对代码的改动可能是多处的。改的不好一群巨无霸会发脾气的。想想绿巨人给雷神来的一拳。    
+</p>
+
+<p>
+那么什么样的代码逻辑是比较好的逻辑呢？    
+这里要推荐大家学习下函数式编程。函数式变成好处多多。巴拉巴拉。。。    经过学习我发现函数或方法大部分时候。他们的内在逻辑是这样的(android版微信建议点击左下角原网页查看代码)：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-text">&#20989;&#25968;&#23450;&#20041;&#65288;&#21442;&#25968;1&#65292; &#21442;&#25968;2&#65292; &#21442;&#25968;3&#12290;&#12290;&#12290;&#65289;
+  &#36807;&#28388;&#38750;&#27861;&#21442;&#25968;
+  &#22788;&#29702;&#21442;&#25968;
+  &#36820;&#22238;&#20540; = &#20854;&#20182;&#20989;&#25968;&#65288;&#22788;&#29702;&#21518;&#21442;&#25968;&#65289; 
+  &#22788;&#29702;&#36820;&#22238;&#20540;
+  &#36820;&#22238; &#36820;&#22238;&#20540;
+
+&#20854;&#20182;&#20989;&#25968;&#65288;&#21442;&#25968;1&#65292; &#21442;&#25968;2&#65292; &#21442;&#25968;3&#12290;&#12290;&#12290;&#65289;
+  &#36807;&#28388;&#38750;&#27861;&#21442;&#25968;
+  &#22788;&#29702;&#21442;&#25968;
+  &#36820;&#22238;&#20540; = &#20854;&#20182;&#20989;&#25968;&#65288;&#22788;&#29702;&#21518;&#21442;&#25968;&#65289; 
+  &#22788;&#29702;&#36820;&#22238;&#20540;
+  &#36820;&#22238; &#36820;&#22238;&#20540;
+</pre>
+</div>
+
+<p>
+看到没有，上面的方法很像递归的思考过程。  
+顺着这个思路进一步思考。  
+</p>
+
+<p>
+1个业务上逻辑可以通过以上的思路进行拆分。每一个方法内部只负责处理当前阶段的的逻辑。如果涉及到运算或极限处理，"递归"的新建另外1个函数来处理。最后最底层的函数基本上只负责：  
+</p>
+
+<ol class="org-ol">
+<li>极限处理</li>
+<li>逻辑运算</li>
+<li>异常过滤</li>
+</ol>
+
+<p>
+而在它上层的各层方法都对返回值进行严格过滤。确保逻辑上的严谨。    
+</p>
+
+<p>
+依照这样的思路，有意的训练自己的编码过程，发现基本上在代码写完之前我不需要调试。写完以后的调试基本上也在2个地方进行  
+</p>
+
+<ol class="org-ol">
+<li>书写错误</li>
+<li>底层运算和过滤函数</li>
+</ol>
+
+<p>
+这里可能有的朋友会问，良好的设计不是应该考虑设计模式吗？回掉函数呢？  
+恭喜你，你是第一个发现问题的。我这里在特别说明下：
+</p>
+
+<p>
+*参数1，参数2，参数3。。。*，参数是语言自带变量类型，包括类实例和函数。  
+</p>
+
+<p>
+按照这个思路进行训练，发现自己的代码逻辑变得严谨。风格开始一致。每个方法都很短.  
+</p>
+
+<p>
+或许以后我还会有新的发现，新的思路，不过到现阶段，我终于觉得我会写代码了。这让我很欣慰。  
+</p>
+
+<p>
+不知道我的这篇文章对大家是否有所启发？    
+如果有更好的思路也希望能整理出来大家一起交流。  
+</p>
+</div>
+</div>
+</div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[泰国游记]]></title>
+    <link href="http://blog.watsy0007.com/2015-05-02-thailand-travel.html"/>
+    <updated>2015-05-02T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/thailand-travel</id>
+    <content type="html"><![CDATA[<p>
+这篇博客并不是1个叙事性的文章，主要是对泰国之行的所见所想进行了1次梳理总结记录。
+以后想起来会继续补充完善。
+</p>
+
+<p>
+<!-- more -->
+</p>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">1. 时间</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+2015-04-26 至 2015-05-02
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-2">
+<h2 id="orgheadline2">2. 开销</h2>
+<div class="outline-text-2" id="text-orgheadline2">
+<p>
+因为是公司组织跟团游。机票酒店费用不用个人出。这里就只统计个人自己费用。
+</p>
+
+<p>
+整体开销：  
+</p>
+
+<ol class="org-ol">
+<li>出国前兑换 <b>10000泰铢</b> = <b>2000人民币</b></li>
+<li>中途兑换 <b>1000泰铢</b> = <b>200人民币</b></li>
+<li>刷卡购买 蛇油丸 <b>3100泰铢</b> ~= <b>620人民币</b></li>
+<li>刷卡购买 钱包 <b>1100泰铢</b> ~= <b>210人民币</b></li>
+</ol>
+
+<p>
+合计：
+</p>
+
+<p>
+<b>15200泰铢</b> ~= <b>3030人民币</b>
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline3" class="outline-2">
+<h2 id="orgheadline3">3. 节目/景点/购物</h2>
+<div class="outline-text-2" id="text-orgheadline3">
+<p>
+注：景点标注为粗体。
+标注的费用不一定准确，拍照的费用没有包含在内。
+整体行程安排按照以下顺序安排。
+</p>
+
+<ol class="org-ol">
+<li><b>大皇宫</b></li>
+<li>坐船游 <b>湄南河</b></li>
+<li><b>巧克力小镇</b></li>
+<li>泰国 曼谷人妖表演秀</li>
+<li>珠宝购物中心</li>
+<li>皮革购物中心</li>
+<li>人鳄大战</li>
+<li>丛林骑大象</li>
+<li>钓鳄鱼</li>
+<li><b>pattaya风情小镇</b></li>
+<li>成人秀 1500 泰铢</li>
+<li><p>
+<b>珊瑚岛</b> <b>金沙岛</b> 水上项目娱乐中心
+</p>
+
+<p>
+12.1. 空中飞人 1500泰铢  （不记得名称了，人穿着降落伞以后用快艇拉在海上）  
+12.2. 摩托快艇 800泰铢  
+12.3. 香蕉船    350泰铢  
+12.4. 潜水    1600泰铢   
+</p></li>
+
+<li>泰式SPA  小费100泰铢</li>
+<li>东方公主号游轮</li>
+<li><b>流星花园</b></li>
+<li>黄金宫殿</li>
+<li>*神殿寺*参观四面佛</li>
+<li>长脖子美女村</li>
+<li>美斯乐泰北民俗村</li>
+<li>双龙寺</li>
+<li><b>皇家毒蛇研究中心</b></li>
+<li><b>KING POWER皇权免税店</b></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4">4. 感受</h2>
+<div class="outline-text-2" id="text-orgheadline4">
+<p>
+因为是跟团，所以我们的行程基本是导游决定的。跟团难免的逃避不开就是走马观花的逛景点，吃难吃的饭。必须的购物。回头来仔细想想，觉得可以分为以下几类进行总结。
+</p>
+</div>
+
+<div id="outline-container-orgheadline8" class="outline-3">
+<h3 id="orgheadline8">4.1 风土人情</h3>
+<div class="outline-text-3" id="text-orgheadline8">
+</div><div id="outline-container-orgheadline5" class="outline-4">
+<h4 id="orgheadline5">左行</h4>
+<div class="outline-text-4" id="text-orgheadline5">
+<p>
+刚到泰国离开机场上大巴的第一反应是觉得别扭。泰国当地的导游和我们说。泰国是1个左行的国家才释然。在泰国驾驶员位置是在车的右前方，行驶在道路左侧。
+</p>
+</div>
+</div>
+<div id="outline-container-orgheadline6" class="outline-4">
+<h4 id="orgheadline6">汽车</h4>
+<div class="outline-text-4" id="text-orgheadline6">
+<p>
+说到汽车要说的是车型，车牌和驾车文化。  
+首先说的是车型，在泰国随处可见的是日本车，丰田，尼桑居多。宝马，奔驰很少见。经过导游的讲解。泰国的九世国王和日本签订协议。日本修筑泰国的高速公路，出口日本的车。小日本太坏了。我想这个可能主要和日本车的性价比有关。因为在泰国。是家家有车的国度！！！随处见到的房子都带车棚。没多远就有1个停车场。比较下来这么多车保有量和经济消费水平。必然是日本车居多。
+其次要说说车牌，这个比较有意思。一路上看到几种车牌，就好奇问导游。。导游讲解在泰国车牌有好几种。主要有    
+2.1 红底黑字  新手上路，不足2个月  
+2.2 白底黑字  私家车  
+2.3 白底绿字 皮卡车，小型火车  
+2.4 皇帝黑字 客运运营车，大巴，出租车。。。  
+其他的没记住，一路上也没看到泰国的警车和警车标志。    
+随后要说的是汽车文化  
+在这几天的行程中，我们几乎一路都在堵车当中。但是很少听到有鸣笛声音。这在国内简直是不可思议。导游给我们讲解，在泰国。鸣笛代表特殊的意义。如果后面的车对你鸣笛一声，表示警告、如果鸣笛2声表示开始骂你了。正常情况下大家都遵守交通规则，不鸣笛。嘿嘿，这里要单独说下，有1次大家都上车了，我因为嘴馋在路边买印度飞饼，被司机大哥鸣笛警告。我听见瞬间觉得很不好意思。赶紧拿起热乎的飞饼飞奔上车。  
+另外1个比较好玩的是和国内旅游不一样。司机到了景点以后就开车走了。原因是景点来来往往的游客太多。如果全部停下来，景点就别想在有人了。直接堵死。所以大家都是自觉的约定时间，到了景点，司机大哥把车开走。到点以后司机大哥把车开回来我们上车。      
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline7" class="outline-4">
+<h4 id="orgheadline7">给小费</h4>
+<div class="outline-text-4" id="text-orgheadline7">
+<p>
+这个其实是让我很意外的。我对给小费的概念停留在书本上，觉得这是一种西式的生活。不应该在东亚这片土地上，尤其还是泰国。
+在导游一路上讲解泰皇是的当年出国留学经历以后明白，这个可能是泰皇决定的。  
+在泰国，一般服务业的服务员都是不拿工资的，收入全部靠消费。给消费表示你对他服务的认可。  
+我们在泰国给小费的地方有酒店每天打扫卫生给20泰铢，spa服务员50泰铢，泰式按摩大妈50泰铢（我没零钱给了100泰铢）  
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline9" class="outline-3">
+<h3 id="orgheadline9">季节</h3>
+<div class="outline-text-3" id="text-orgheadline9">
+<p>
+不象国内接受的季节观念。
+在泰国只有3季。  
+4.1 冷季  
+4.2 热季  
+4.3 雨季    
+特别要说明的是，在泰国旅游一定要吃水果才算不虚此行。但是吃水果最好的季节一年有2个时候。1个是&lt;font color='red'&gt;5月&lt;/font&gt;，1个是&lt;font color='red'&gt;10月&lt;/font&gt;。  
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline10" class="outline-3">
+<h3 id="orgheadline10">人妖</h3>
+<div class="outline-text-3" id="text-orgheadline10">
+<p>
+我想这个不需要多说，大家去泰国旅行最大的兴趣，1部分是人妖，剩下一部分就是红灯区了。  
+我们在行程安排中就有2场和人妖有关的表演。另外我们组团自费参观了一场成人表演中大部分表演也有人妖的部分。  
+全部行程下来，人妖的出现让我对泰国是否有女人已经产生了怀疑。。满眼望去，漂亮一点的，大部分是人妖！！！！
+在东方公主号吃饭的过程中。人妖表演过程中有拍照的时候，和人妖合照只要20泰铢！！！可以随便摸。不过我已经没兴趣了。。  
+最大的疑惑这里已经解答了。    
+在我们行程中一路上很少见到老外，满眼望去都是中国人。少量的韩国人和日本人。    
+只有在到了泰国红灯区以后才看到大量的老外    
+究其原因，其实东亚的文化对女人和性其实是比较压抑的。越压抑内心越渴望。希望看到性感，火辣，有风情的女性。但是东亚的女人很少会表现出来。人妖的出现，满足了东亚人这种需求。但是对欧美老外来说，没有这种需求。充其量会有少量老外好奇人妖的功能性。。。想到这里突然觉得我是助长了这种风气。有一种罪恶感。  
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline11" class="outline-3">
+<h3 id="orgheadline11">一夫多妻</h3>
+<div class="outline-text-3" id="text-orgheadline11">
+<p>
+在泰国，一夫多妻是合法的。1个男人最多可以合法的拥有7个老婆。  
+给我们讲解的导游说自己是单身。。让我们开了好大1个玩笑。  
+究其原因，1个是泰国的男人，1部分去当了人妖。。另外一部分在文化小杰里面要说。泰国男人在成年之前必须要出家1次。。有的男人就再也不还俗了。。
+导致泰国可以成家立业的男人太少。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline12" class="outline-3">
+<h3 id="orgheadline12">红灯区</h3>
+<div class="outline-text-3" id="text-orgheadline12">
+<p>
+在泰国，红灯区是合法的。至少在pattaya我去参观的红灯区一条街上。敞开大门在门口招揽声音。  
+另外据导游说在spa，按摩店铺里面也提供服务。看门店招牌上写着 message的一般都提供。  
+出于好奇，一路我对这些店都比较留意。。果然大街小巷大量的这种店。  
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline13" class="outline-2">
+<h2 id="orgheadline13">工作</h2>
+<div class="outline-text-2" id="text-orgheadline13">
+<p>
+车上导游给我们讲解泰国人的脾气性格时候。问了我们1个问题，在中国，1个月发几次工资，大家猜猜在泰国1个月发几次工资？
+结果是，在和泰国，1个月一般发3~5次工资。泰国人太懒了。如果1次性把钱全发了。。肯定会出去大玩特玩。直到把钱花完才回来继续上班。  我对这点表示很没想法。
+另外1个好玩的是，泰国人都会有2个手机，1个工作用，1个生活用。工作用的手机下班以后，老板决定打不通！！！！这招太赞了。哈哈。
+另外要说的1点是。泰国的工作因为部分职业和小费制挂钩。所以服务行业都比较卖力，这点比较赞  
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline14" class="outline-2">
+<h2 id="orgheadline14">住宅</h2>
+<div class="outline-text-2" id="text-orgheadline14">
+<p>
+在整个行程中，随处可见的是各种各样风格的房屋，左面是1个欧式风格洋房，右面紧挨的可能就是1个棚户，或者古典的台式庄园或者直接是小工厂，还有可能直接就是一大片荒地！！！
+这在中国是无法想象的。简直是乱七八糟。一点规划都没有。
+和导游交流得到的答案是，在泰国，土地是私人的。可以继承。私人的土地如何处理是个人的事情！！！想着我还没买房。瞬间觉得蛋蛋的忧伤。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline15" class="outline-2">
+<h2 id="orgheadline15">个体商贩</h2>
+<div class="outline-text-2" id="text-orgheadline15">
+<p>
+在泰国除去没有规划的乱七八糟的建筑之外，还有1个乱七八糟的影响市容的事情是。大街小巷随处可见的小商贩，推着手推车，悠闲的摆摊，不用担心城管砸摊。也有推着自行车，看见人多就下来卖卖花生的印度阿三大叔。  
+最比较好玩的和国内不一样的地方是，在泰国，大家数学都不好。买东西不是按照多少斤多少钱来买。而是小商贩1份1份的打包好。1份多少钱。分量大品质好的贵点，不然就便宜点。1口价。导游告诉我们不用讨价还价，觉得不错就买，泰国人就是这么任性，不讨价还价。我比较怀疑，经过同事们的验证，谁说不可以的？我看了几次不要。。也会追着我主动降价滴！！2333333333
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline16" class="outline-2">
+<h2 id="orgheadline16">假货</h2>
+<div class="outline-text-2" id="text-orgheadline16">
+<p>
+说到这点，其实比较脸红。比起国内这种真货不如假货吃香的地方，泰国人自夸自己没有假货这简直就是在赤裸裸的打我们的脸啊。导游自吹了一通以后告诉我们，为什么我们没有假货呢？  
+因为我们的九世泰皇当年喜欢玩跑车，出车祸去医院救治时候，被假药治瞎了眼睛，现在一只眼睛是玻璃球。泰皇想着人民受到假货的痛苦就颁布了一条法令，假货后果很严重，假药是要判死刑的。！！！  
+我觉得国内完全可以考虑考虑。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline17" class="outline-2">
+<h2 id="orgheadline17">死刑</h2>
+<div class="outline-text-2" id="text-orgheadline17">
+<p>
+上面已经说到1条死刑了。。假药。
+泰国有3条死刑  
+另外1条是贩毒。  
+还有1条是什么忘记了，回头补充下。  
+比较奇怪的是，在泰国杀人是不犯法的。持枪也是合法的，20万泰铢购买枪支。杀人以后如果有钱，可以找人顶替坐牢。我没想明白为什么会有这样的事情。难道因为太穷？  
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline18" class="outline-2">
+<h2 id="orgheadline18">饮食</h2>
+<div class="outline-text-2" id="text-orgheadline18">
+<ol class="org-ol">
+<li>中餐</li>
+</ol>
+<p>
+我们一路上基本没吃到什么中餐。基本上所有的菜在泰国都有一种浓烈的香气。就像国内的菜放了香菜一样，浓烈。  只要进了餐馆就能闻到。我有几个同事实在受不了这味道。。几天都没吃过1顿好饭。。23333333    
+</p>
+<ol class="org-ol">
+<li>泰餐</li>
+</ol>
+<p>
+同样我们也没吃到什么地道的泰餐。据同事讲，一路上比较地道的就算冬阴功了。顿顿饭必上好么。。还有1个米粉我说不出来名字。顿顿午饭必备。
+</p>
+
+<ol class="org-ol">
+<li>水果</li>
+</ol>
+<p>
+水果在国内充其量算零食或者餐前，餐后甜点。但是在泰国，顿顿饭都有水果。西瓜是常见的不能在常见了。基本上我没有1顿饭少了西瓜的。另外其他的水果也比较多。热带的水果在当地很便宜。怎么个便宜呢？  
+我们购买了2大块榴莲，要100泰铢，折算人民币20元，同样的分量在国内，最少要40人民币。这还是旅游景点 人妖表演剧院边上的价格。
+在曼谷去湄公河时候，我们买了1份芒果。新鲜切片的芒果，好象也只要50泰铢。分量估计是1个半大芒果。
+其他的就不举例了。。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline19" class="outline-2">
+<h2 id="orgheadline19">文化</h2>
+<div class="outline-text-2" id="text-orgheadline19">
+<ol class="org-ol">
+<li>小乘佛教信仰</li>
+</ol>
+<p>
+泰国在宗教信仰上属于佛教信仰。属于小乘佛教。  
+在泰国，所有男子成年以前都需要出家一次。最少7天，长的1年，在长，就真出家了。  
+我们在逛大皇宫时候，看到路边有一队小和尚路过，全部光着脚，穿着袈裟。排队跟着大师父走。  
+等我们进入大皇宫脱鞋时候，地面上的温度让烫的我飞快的跑进大皇宫。想到刚刚见过的那群小和尚。想起导游说：    
+在泰国，每个男人成年以前都要出家，出家当小和尚都要化缘，要光着脚，清晨5~6点起来，抱着钵化缘，这个钵必须2只手抱着，不能落地，为的是体验母亲怀胎时候的情景，知道感恩母亲。。。  
+想起来觉得这个是咱们国内真正缺少的，溺爱导致很多人不知道父母的不易。    
+另外一路行程中。看到凡是庭院的住宅。或者商场，都会在庭院内的左前放放置1个佛堂。也有不少商场是摆放在正门口的。
+在泰国，所有佛堂摆放的基本都是释迦牟尼，不象我们国内还有其他佛和菩萨的道场。
+另外导游和我们说起1个有意思的事情是  
+在泰国，女人是不能随便碰修行的高僧的，因为那会破了他修炼多年的法力。一旦碰了以后，好了。高僧就只能从新修炼或者还俗了。还俗了怎么找对象？就只能找你了。。  
+</p>
+
+<ol class="org-ol">
+<li>皇权信仰</li>
+</ol>
+<p>
+泰国是君主立宪制国家。  
+皇帝对我们中国人来说已经陌生的属于上上个世纪的经历，谁也不知道，没体验过，也很少有人注意过，只在电视上看到。但是在泰国随处可见的花园，河边，酒店大堂或者佛堂都会放一张九世国王的照片。  
+甚至在钱的正面也全部都是九世国王。  
+导游一路给我们的讲解中，都会说，这个是我们九世国王如何如何的仁慈，关心老百姓。  
+我们的医疗体系是国王颁布的。30泰铢看百病。  
+pattaya是政府管辖的，不是国王管辖的，红灯区是他们弄的。  
+人妖以前不能出国，国王特赦在护照上签署变性人，可以出国。    
+等等一系列国王光辉形象。
+另外九世国王传位给儿子，儿子不干好事，王位又收回去。打算传给二公主等等皇家故事。转头看一眼马路上的广告牌位置。。放着一张二公主照片。恩，离上位不远了。  
+</p>
+</div>
+</div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[《联盟》读书笔记]]></title>
+    <link href="http://blog.watsy0007.com/2015-04-27-the-alliance-reading-notes.html"/>
+    <updated>2015-04-27T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/the-alliance-reading-notes</id>
+    <content type="html"><![CDATA[<p>
+最近参加微信朋友圈读书会活动。  要求每周最少读1篇和文学无关的书籍，最好是创业类的。正好之前看完《从0到1》里面提到里德霍夫曼。看到亚马逊推荐里面把《联盟》和《从0到1》捆绑销售。而《联盟》的作者之一就是里德霍夫曼。  
+在亚马逊上看了本书的副标题 <i>互联网时代的人才变革</i> 以后决定入手学习下。
+</p>
+
+<p>
+<!-- more -->
+</p>
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">本书主题</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+快速通览全书以后，个人感觉本书的主题可以归结为2个主题。    
+</p>
+<ol class="org-ol">
+<li>采用书面+口头约定的**任期制**实现企业上下级之间建立互相信任，互利互惠的合作关系。</li>
+<li>通过任期制建立的诚信关系，企业通过员工**获取企业需要的商业情报**。</li>
+</ol>
+
+<p>
+下面详细了解下2个主题相关内容。
+</p>
+</div>
+<div id="outline-container-orgheadline2" class="outline-3">
+<h3 id="orgheadline2">任期制</h3>
+<div class="outline-text-3" id="text-orgheadline2">
+<p>
+任期制和传统雇佣制最大的区别匹配个人目标和公司需要。  
+通过互相沟通，确定个人的目标和公司的需要。在诚实的前提下把找到最大化的共同点。
+之后双方共同根据统一目标制定限定期限的执行计划。
+</p>
+
+<p>
+这样做有几个很明显的好处。    
+</p>
+<ol class="org-ol">
+<li>充分调动了员工的积极性</li>
+<li>在公司运营中可以快速的调整</li>
+<li>通过员工获取广泛的商品情报</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3">情报关系网</h3>
+<div class="outline-text-3" id="text-orgheadline3">
+<p>
+通过任期制建立的诚信关系。公司可以根据需要从所有关系网中获取自己需要的隐形数据。
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4">简要点评</h2>
+<div class="outline-text-2" id="text-orgheadline4">
+<ol class="org-ol">
+<li>任期制解答了我一直以来对“辞职”这个话题的困惑。</li>
+<li>任期制给我1个如何管理的操作指导手册。</li>
+<li>书中的人脉关系网比较适合于发展到一定阶段。有大量人才流入流出情况下，公司需要维护情报网。</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-2">
+<h2 id="orgheadline5">精彩摘要</h2>
+<div class="outline-text-2" id="text-orgheadline5">
+<ol class="org-ol">
+<li>“任期”一词来源于军事中的“服役期”，任期计划指的是一向特定任务或安排。</li>
+<li>通过将员工在你的公司度过的职业生涯重新规划为一系列连续的任期，你可以更好的吸引和留住开创型员工。</li>
+<li>任期的时间有限，也就限定了明确的工作重点和讨论未来关系时双方认可的时间框架。</li>
+<li>轮转期不是根据员工的个人情况制定的，而且往往是高度可换的。</li>
+<li>转变期是个性化的。更注重完成某个特定任务。</li>
+<li>转变期核心承诺是，员工将有机会改变自己的职业生涯和所效力的公司。</li>
+<li>雇主和员工保持高度一致性是基础期的标志。</li>
+<li>任期框架的要点是，不管任期多长，都应进行高度信任，高度诚实的对话，让双方能够进行明确的投资。</li>
+<li>目标协调的3个步骤，1，建立和传播公司的使命和价值观。2，了解每位员工的核心理想和价值观。3，合作协调员工，管理者和公司的使命和价值观。</li>
+<li>给管理者的建议。1，确定团队的价值观。2，一对一确定个人价值观。3，通过坦诚建立信任。</li>
+<li>任期的“正确”结构也取决于员工的个人需求。</li>
+<li>定期的检查以交流反馈。</li>
+<li>在任期临近结束前，开始制定下1任期的计划。</li>
+<li>扩大职业人脉有助于员工改变职业生涯，员工人脉有助于公司改变自身。</li>
+<li>人脉情报能提供获取“隐藏数据”-无法公开获取的信息-的渠道。</li>
+<li>鼓励员工积极使用社交媒体展示自己。</li>
+<li>同事联络网能帮你雇到优秀人才。</li>
+<li>前员工能提供有用的情报。</li>
+<li>前员工能推荐客户。</li>
+<li>前员工是品牌大使。</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-2">
+<h2 id="orgheadline6">其他</h2>
+<div class="outline-text-2" id="text-orgheadline6">
+<p>
+<b>小技巧</b>
+如何寻找员工的目标和价值观？    
+让员工写下3个最钦佩的人名字，然后在每个名字下面列出3种他最钦佩的品质。最后对9种品质进行排序。1最重要，9最次要。
+</p>
+</div>
+</div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[《断舍离》读书笔记]]></title>
+    <link href="http://blog.watsy0007.com/2015-04-24-%E6%96%AD%E8%88%8D%E7%A6%BB%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0.html"/>
+    <updated>2015-04-24T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/断舍离读书笔记</id>
+    <content type="html"><![CDATA[<p>
+很早就听说断舍离这本书了。听很多人提起过这本书是如何如何的不错。最近感觉生活有点乱，房间里面堆了好多东西。于是翻出来看一下。
+不过快速翻完以后再一次加深了对日本作者写书啰啰嗦嗦的印象。很简单的内容为了出版的需要强行补充了很多不必要的内容。    
+</p>
+
+<p>
+<!-- more -->
+</p>
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">1. 本书主题</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+其实全书的核心其实书的标题已经点明了。  
+</p>
+
+<ol class="org-ol">
+<li><b>断</b> ：断绝想要进入自己家的不需要的东西</li>
+<li><b>舍</b> ：舍弃家里到处泛滥的破烂</li>
+<li><b>离</b> ：脱离对物品的执念，处于游刃有余的自在空间</li>
+</ol>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-3">
+<h3 id="orgheadline2">1.1 阶段</h3>
+<div class="outline-text-3" id="text-orgheadline2">
+<ol class="org-ol">
+<li><b>断的阶段</b></li>
+</ol>
+<p>
+反复思考物品对自己的意义。是否需要。    
+</p>
+<ol class="org-ol">
+<li><b>舍的阶段</b></li>
+</ol>
+<p>
+对物品进行分类    
+无用的直接丢弃或者送给需要的人    
+对有用的物品进行收纳整理。迭代保留高质量自己想要的好物品。    
+</p>
+
+<p>
+1和2阶段反复的训练达到阶段3.    
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-2">
+<h2 id="orgheadline3">2. 简要点评</h2>
+<div class="outline-text-2" id="text-orgheadline3">
+<ol class="org-ol">
+<li>作者介绍了大量的案例和各种玄学风水概念的混合用来强化断舍离这个主题使得本书质量不高。</li>
+<li>书的结构不是很好。大部分章节可以跳着看。</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4">3. 精彩书摘</h2>
+<div class="outline-text-2" id="text-orgheadline4">
+<ol class="org-ol">
+<li>断舍离的主角并不是物品，而是自己。</li>
+<li>只要坦然面对物品，也就是坦然面对自己。整理房间也就是整理自己。</li>
+<li>收拾，是一种筛选物必要物品的工作。在筛选必要物品的时候，我们要考虑两个维度，一个是我与物品的关系这条关系轴，一个是当下这条时间轴。</li>
+<li>一个人所使用的物品，能够反映出自己我形象，认识到了自我形象，反过来就会开始想要把现在用一的东西替换掉了。</li>
+<li>要是自己能随便凑合着一个东西用，那别人也会用随便的态度来对付你。</li>
+<li>并非物品不好，二十因为自己判断失误才导致物品冗余堆积。</li>
+<li>物品要用才有价值。</li>
+<li>物品处于恰当位置，才能展示美感。</li>
+<li>逃避现实型：这种人太忙碌，几乎没什么时间待在家里，所以也没办法收拾屋子。多数情况下，这种人都是对家庭有所不满，不愿意待在家里，所以就找各种各样的事，让自忙碌起来</li>
+<li>执着过去型：这种类型的人，即便是现在已经不会再用的过去的东西，也非得收着不可。</li>
+<li>担忧未来型：这种类型的人致力于投资不知何时会发生的未来的不安因素。</li>
+<li>阻碍我们行动的一个很重要的原因就是选项太多以至于无从选择，也就是“回避决定原则”。</li>
+<li>我们追求的是靠1个动作就能完成。</li>
+</ol>
+</div>
+</div>
+]]></content>
+  </entry>
+  
+</feed>

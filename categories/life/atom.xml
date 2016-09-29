@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Life | watsy0007]]></title>
+  <link href="http://blog.watsy0007.com/categories/life/atom.xml" rel="self"/>
+  <link href="http://blog.watsy0007.com/"/>
+  <updated>2016-09-29T19:38:07+08:00</updated>
+  <id>http://blog.watsy0007.com/</id>
+  <author>
+    <name><![CDATA[watsy0007]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[自动化人生-闹钟]]></title>
+    <link href="http://blog.watsy0007.com/2016-04-20-automatic-life.html"/>
+    <updated>2016-04-20T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/automatic-life</id>
+    <content type="html"><![CDATA[<p>
+日常生活中可以自动化的事情。随手写段小程序记录。
+</p>
+
+
+
+
+<p>
+<!-- more -->
+</p>
+
+
+
+
+<p>
+今天中午有点犯困，碰巧没带apple watch，没办法用闹钟功能，又不想用手机闹钟打扰同事，决定用电脑上的闹钟。翻了下mac的application目录，发现并没有闹钟。想着要不要下个闹钟时候，突然想到我是程序员啊。
+简单点用shell写个用用就好了。代码如下
+</p>
+
+
+
+
+<p>
+<a href="https://gist.github.com/3aa46607b144967d697a20f4bc2e0a38">sleep.sh</a>
+</p>
+
+
+<div class="org-src-container">
+
+<pre class="src src-shell">sleep $<span style="color: #d75fd7;">1</span>
+<span style="color: #268bd2; font-weight: bold;">while </span><span style="color: #268bd2;">true</span>
+<span style="color: #268bd2; font-weight: bold;">do</span>
+  sleep <span style="color: #d75fd7;">1</span>
+  say <span style="color: #2aa198;">"wake up"</span>
+<span style="color: #268bd2; font-weight: bold;">done</span>
+</pre>
+</div>
+
+
+<p>
+实现到点人声提醒起床
+</p>
+
+
+
+
+<p>
+午睡10分钟
+</p>
+
+
+<div class="org-src-container">
+
+<pre class="src src-shell">./sleep.sh <span style="color: #d75fd7;">600</span>
+</pre>
+</div>
+
+
+
+
+<p>
+带上耳机调节椅背睡觉。
+</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[买衣服随笔]]></title>
+    <link href="http://blog.watsy0007.com/2016-01-25-buy-suit.html"/>
+    <updated>2016-01-25T00:00:00+08:00</updated>
+    <id>http://blog.watsy0007.com/buy-suit</id>
+    <content type="html"><![CDATA[<p>
+最近公司要拍职业照片。要拍1张正装照，1张休闲，还有团体的。
+工作这么多年了还没有正装呢。正好周末找个时间去买了1套。
+</p>
+
+
+
+
+<p>
+原本是不会有此文的，周日晚上在回顾2016年计划时候，*每周最少1篇博客* 的计划让我考虑还是写点什么。想来想去也就买衣服这件事情好写了。
+</p>
+
+
+
+
+<p>
+真正写时候发现，没什么好写的。写什么呢？流水账没必要记，又不是什么大事。把买衣服的过程好好回顾了一下。还真有几点值得写的。
+</p>
+
+
+
+
+<p>
+<!-- more -->
+</p>
+
+
+
+
+<p>
+首先发现1点很现实的事情
+</p>
+
+
+
+
+<div id="outline-container-orgheadline1" class="outline-3">
+<h3 id="orgheadline1">1. 人靠衣装马靠鞍</h3>
+<div class="outline-text-3" id="text-orgheadline1">
+<p>
+试衣服时候，脱下休闲装，换上正装的那个瞬间，想到这句话。穿上正装，不自然的人也觉得精神多了，自信多了。虽然知道这是我心里作祟。但是确实是有效果。
+</p>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgheadline2" class="outline-3">
+<h3 id="orgheadline2">2. 西装的历史</h3>
+<div class="outline-text-3" id="text-orgheadline2">
+<p>
+既然穿着这么有效果，不自然的就想知道。西装的历史，顺手google一下<a href="https://zh.wikipedia.org/wiki/%E8%A5%BF%E8%A3%9D">西装</a>
+</p>
+
+<p>
+好玩的是这一段
+</p>
+
+<p>
+中国第一套西装诞生于1903年，知名民主革命家徐锡麟制作的，徐锡麟于1903年在大阪与同在日本学习西装工艺的宁波裁缝王睿谟相识，
+次年，徐锡麟回国，在上海王睿谟开设的王荣泰西服店定制西服，王睿谟花了三天三夜时间，全部用手工一针一线缝制出中国第一套国产西装。
+[來源請求]不過一直到20世紀後期西裝在中國才趨於普遍。西裝的傳入，初時多由出國商人或出國留學生穿着。
+上海的中式裁縫也開始學習製作西裝。1920年代的新文化運動中，西裝衝擊了傳統的長袍馬褂，此後西裝廣泛流傳，中國的西裝業也蓬勃發展。
+民國時代，國民政府曾明定長袍馬褂為國民禮服，當時的政治人物包括蔣介石、林森等人，也多穿著長袍馬褂、中山裝或者軍裝，而中華人民共和國成立後，毛澤東與鄧小平等重要領導人均穿著中山裝，直到改革開放之後，中國政治界人物，才普遍穿著西裝。
+</p>
+
+<p>
+这样看来，西装被我们接受的历史其实也就30多年，但是已经相当普遍了。可见文化的影响力。
+</p>
+
+<p>
+不过感觉wiki的这段历史演变线路并不清晰，于是从新找。找到百度百科的<a href="http://baike.baidu.com/subview/3265/5065000.htm?fromtitle=%E8%A5%BF%E6%9C%8D&amp;fromid=777321&amp;type=syn">西服的历史</a>
+大家可以看下，包括如何挑选也有了。
+</p>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3">3. 如何买到性价比合适东西</h3>
+<div class="outline-text-3" id="text-orgheadline3">
+<p>
+我的这套西装买的比较随意。在selected买的。衣服+裤子算下来2000出点头。不过买回来总觉得有点不对劲。
+因为西装有这么悠久的历史，这么广泛穿着场合。市场很大，也就表示属于买家市场，可以寻找最优性价比的西装。
+买之前怎么没有好好研究研究呢？太过随性了。
+想到这里，又想到，其实买方市场追求性价比是有一套通用的实践规则的。
+</p>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4">总结一下</h2>
+<div class="outline-text-2" id="text-orgheadline4">
+<ol class="org-ol">
+<li><b>了解产品的历史，材料，功能和市场等资料</b></li>
+<li><b>了解产品的相关品牌，以及品牌定位</b></li>
+<li><b>了解产品的价格，以及价格相关的品牌</b></li>
+<li><b>利用互联网攻略最高快购买高性价比的方案</b></li>
+<li><b>实践中调整</b></li>
+</ol>
+</div>
+</div>
+
+]]></content>
+  </entry>
+  
+</feed>

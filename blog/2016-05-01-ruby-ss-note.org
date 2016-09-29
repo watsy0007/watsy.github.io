@@ -1,0 +1,76 @@
+#+TITLE: shadowsocks-ruby 笔记(1)
+#+DATE: 2016-05-01
+#+SETUPFILE: /Users/watsy/Documents/code/github/watsy0007.github.io/setupfile/setupfile-sample.org
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES: ruby
+#+JEKYLL_TAGS: ruby actor
+#+JEKYLL_PUBLISHED: true
+
+ruby开发ss 系列文章第一篇--- tcp 服务器
+
+{{{more}}}
+
+功能
+
+1. 多端口绑定
+2. 每个tcp 独立运行
+2. 任一tcp server 异常自动重启
+
+#+BEGIN_SRC ruby
+#!/usr/bin/env ruby
+#
+require "bundler/setup"
+require "celluloid/io"
+require 'celluloid/current'
+
+class EchoServer
+  include Celluloid::IO
+  finalizer :finalize
+
+  def initialize(host, port)
+    puts "*** Starting echo server on #{host}:#{port}"
+    @server = TCPServer.new(host, port)
+    async.run
+  end
+
+  def finalize
+    puts "finalize #{@server}"
+    @server.close if @server
+  end
+
+  def run
+    loop { async.handle_connection @server.accept }
+  end
+
+  def handle_connection(socket)
+    _, port, host = socket.peeraddr
+    puts "*** Received connection from #{host}:#{port}"
+    loop do
+      reads = socket.read
+      raise EOFError, 'error' if reads.empty? && socket.eof?
+      socket.write reads
+    end
+  rescue EOFError
+    puts "*** #{host}:#{port} disconnected"
+    socket.close
+  end
+end
+
+supervisor = EchoServer.supervise_as :_1234, '127.0.0.1', 1234
+EchoServer.supervise_as :_1235, '127.0.0.1', 1235
+trap("INT") do
+  supervisor.terminate
+  exit
+end
+
+timers = Timers::Group.new
+timers.every(5) do
+  actor = supervisor[:_1234]
+  if actor
+    puts 'kill server 1'
+    next supervisor.remove(actor)
+  end
+  EchoServer.supervise_as :_1234, '127.0.0.1', 1234
+end
+loop { timers.wait }
+#+END_SRC

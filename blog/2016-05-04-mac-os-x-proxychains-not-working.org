@@ -1,0 +1,34 @@
+#+TITLE: mac os x proxychains 命令行下无法代理原因
+#+DATE: 2016-05-04
+#+SETUPFILE: /Users/watsy/Documents/code/github/watsy0007.github.io/setupfile/setupfile-sample.org
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES: mac
+#+JEKYLL_TAGS: mac
+#+JEKYLL_PUBLISHED: true
+#+JEKYLL_COMMENTS: true
+
+
+最近打算用docker搭1个反向代理google的服务。网上找了一些命令行下代理的方案。采用的proxychains-ng，使用中发现无法翻墙。
+
+{{{more}}}
+
+具体配置方案这里就不写了。
+
+google 关键字 *proxychains-ng not working* 找到有人提了issue
+
+[[https://github.com/rofl0r/proxychains-ng/issues/78][Not working on OS X 10.11. due to SIP]]
+
+接着看下SIP资料 [[https://support.apple.com/en-us/HT204899][About System Integrity Protection on your Mac]]
+
+继续翻翻有2种解决方案
+
+1. 关闭SIP
+[[http://apple.stackexchange.com/questions/208478/how-do-i-disable-system-integrity-protection-sip-aka-rootless-on-os-x-10-11][how do i disable System Integrity Protection(SIP) AKA "rootless" on OS X 10.11, EI Capitan?]]
+
+2. 不用受保护目录下的命令
+
+#+BEGIN_SRC shell
+proxychains4 /usr/local/Cellar/curl/7.48.0/bin/curl http://ifconfig.co
+#+END_SRC
+
+解决
