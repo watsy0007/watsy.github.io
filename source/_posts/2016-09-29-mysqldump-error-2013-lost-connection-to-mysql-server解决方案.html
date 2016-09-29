@@ -5,7 +5,8 @@ layout: post
 categories: 
 - mysql
 tags: 
-- mysql
+- mysql 
+- bug
 published: true
 comments: 
 ---
@@ -28,7 +29,7 @@ comments:
 
 <div class="org-src-container">
 
-<pre class="src src-shell">mysqldump --opt --max_allowed_packet=<span style="color: #d75fd7;">1024M</span> dbname &gt; db.sql
+<pre class="src src-shell">mysqldump --opt --max_allowed_packet=<span style="color: #d75fd7;">1024M</span> --single-transaction dbname &gt; db.sql
 </pre>
 </div>
 
